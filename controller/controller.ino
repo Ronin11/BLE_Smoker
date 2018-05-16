@@ -106,6 +106,7 @@ void loop(void)
     char cstr[8];
     sprintf(cstr, "%03i", farenheit);
     bleuart.write(cstr, 8);
+    Serial.println("WRITING TEMP");
      digitalWrite(LED_BUILTIN, HIGH);
    }else if(packetbuffer[1] == 's'){
      digitalWrite(LED_BUILTIN, LOW);

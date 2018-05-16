@@ -1,0 +1,17 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>
+			Ionic Blank
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<button (click)='startScan()'>Scan for Devices</button>
+	<button (click)='ble.stopScan()'>Stop Scan</button>
+	<!-- Available Devices: {{devices}} -->
+	<div *ngFor="let device of devices" >
+		NAME: {{device.name}} 
+		<button (click)='connect(device.id)'>ID: {{device.id}}</button>
+	</div>
+</ion-content>
