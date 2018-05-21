@@ -41,7 +41,6 @@ export class BleProvider {
 	connect(bleId){
 		return new Promise((resolve, reject) => {
 			this.ble.connect(bleId).subscribe((device) => {
-				console.log("CONNECTED: ", device);
 				this.connectedTo = device.id;
 				this.startNotifications();
 				resolve(device);
