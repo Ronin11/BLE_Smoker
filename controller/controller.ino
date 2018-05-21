@@ -4,6 +4,8 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include "CommandParser.h"
+
 // Data wire is plugged into port 2 on the Arduino
 #define ONE_WIRE_BUS 2
 
@@ -21,6 +23,10 @@ DeviceAddress addr;
 uint8_t readPacket (BLEUart *ble_uart, uint16_t timeout);
 float   parsefloat (uint8_t *buffer);
 void    printHex   (const uint8_t * data, const uint32_t numBytes);
+
+// Function prototypes for commandParser.c
+void addCommand(char* commandString, char* (*setFunc)(char* input), char* (*getFunc)());
+char* parseCommand(char* commandString);
 
 // Packet buffer
 extern uint8_t packetbuffer[];
@@ -41,12 +47,16 @@ void setup(void)
   // Set max power. Accepted values are: -40, -30, -20, -16, -12, -8, -4, 0, 4
   Bluefruit.setTxPower(4);
   Bluefruit.setName("Super Awesome BLE");
-
+  Bluefruit.autoConnLed(true);
+  
   // Configure and start the BLE Uart service
   bleuart.begin();
 
   // Set up and start advertising
   startAdv();
+
+  //Setup commands
+  setupCommands();
 }
 
 void startAdv(void)
@@ -77,9 +87,22 @@ void startAdv(void)
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
 }
 
+char* getTemp(void)
+{
+  Serial.println("BITCH");
+  return "TEMP"; 
+}
+
+void setupCommands()
+{
+  Serial.println("COMMANDS");
+  addCommand("temp", NULL, &getTemp);  
+}
  
 void loop(void)
-{  
+{ 
+//  parseCommand("temp:?");
+//  delay(500);
 
   //On connect we will request the time from the device to set the internal clock
   if(Bluefruit.connected() && !isBleConnected){
@@ -104,7 +127,7 @@ void loop(void)
   // Got a packet!
    if(packetbuffer[1] == 'a'){
     char cstr[8];
-    sprintf(cstr, "%03i", farenheit);
+    sprintf(cstr, "temp:%03i", farenheit);
     bleuart.write(cstr, 8);
     Serial.println("WRITING TEMP");
      digitalWrite(LED_BUILTIN, HIGH);

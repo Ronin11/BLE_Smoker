@@ -7,11 +7,18 @@
 </ion-header>
 
 <ion-content padding>
-	<button (click)='startScan()'>Scan for Devices</button>
-	<button (click)='ble.stopScan()'>Stop Scan</button>
-	<!-- Available Devices: {{devices}} -->
-	<div *ngFor="let device of devices" >
-		NAME: {{device.name}} 
-		<button (click)='connect(device.id)'>ID: {{device.id}}</button>
+	<div *ngIf='!ble.connectedTo'>
+		<button ion-button *ngIf='!ble.isScanning' (click)='startScan()'>Scan for Devices</button>
+		<button ion-button *ngIf='ble.isScanning' (click)='ble.stopScan()'>Stop Scan</button>
+		<!-- Available Devices: {{devices}} -->
+	
+		<div *ngFor="let device of ble.devices" >
+			{{device.name}} 
+			<button ion-button (click)='connect(device.id)'>Connect</button>
+		</div>
+	</div>
+	<div *ngIf='ble.connectedTo'>
+		TEMP: {{temp}}
+		<button ion-button (click)='getTemp()'>getTemp</button>
 	</div>
 </ion-content>
