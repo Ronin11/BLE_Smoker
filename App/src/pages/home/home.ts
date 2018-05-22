@@ -13,14 +13,23 @@ import { BleProvider } from '../../providers/ble/ble';
   providers: [BleProvider]
 })
 export class HomePage {
-	temp = 0;
+	maxTemp = 300;
+	gaugeBackgroundColor = "#eee";
+	gaugeType = "arch";
+    gaugeLabel = "Temperature";
+	gaugeAppendText = "F°";
+	metricAppendText = "C°";
 
   constructor(
 	private ble: BleProvider, 
 	public platform: Platform,
 	public loadingCtrl: LoadingController,
 	public navCtrl: NavController) {
+		this.ble.isPreviousDeviceAvailable().then(savedDevice => {
+			this.connect(savedDevice)
+		})
 	}
+
 
 	startScan(){
 		this.ble.startScan();
@@ -39,8 +48,14 @@ export class HomePage {
 		loader.dismiss();
 	}
 
-	getTemp = async function(){
-		this.temp = await this.ble.getTemp();
+	gaugeColor(){
+		let r = (this.maxTemp - 255 + this.ble.temp).toString(16);
+		let g = '00';
+		let b = (255 - this.ble.temp).toString(16);
+		if(r == '0')
+			r = '00'
+		if(b == '0')
+			b = '00'
+		return `#${r}${g}${b}`;
 	}
-
 }

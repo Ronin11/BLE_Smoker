@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { BLE } from '@ionic-native/ble';
 
 import encoding from 'text-encoding';
 
-const bleUartId = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
-const bleUartWrite = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
-const bleUartRead = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+const bleSmokerUUID = '0011'
+const bleSmokerTemperatureCharacteristic = '0012'
+
+const deviceStorageKey = 'device'
 
 @Injectable()
 export class BleProvider {
@@ -14,16 +16,37 @@ export class BleProvider {
 	connectedTo = null;
 	decoder = new encoding.TextDecoder();
 	encoder = new encoding.TextEncoder();
+	temp = 0;
 
-	constructor(private ble: BLE) {
-		// console.log('Hello BleProvider Provider');
+	constructor(private zone: NgZone,
+		private storage: Storage,
+		private ble: BLE) {
+			// ble.isConnected(bleSmokerUUID).then(val => {
+			// 	console.log("CONNECTED: ", val)
+			// })
+	}
+
+	isPreviousDeviceAvailable(){
+		return new Promise((resolve, reject) => {
+			this.storage.get(deviceStorageKey).then((savedDevice) => {
+				if(savedDevice){
+					this.isScanning = true;
+					this.ble.startScan([bleSmokerUUID]).subscribe(device => {
+						if(savedDevice == device.id){
+							resolve(savedDevice)
+						}
+					})
+				}
+			});
+		})
 	}
 
 	startScan(){
 		this.isScanning = true;
-		this.ble.startScan([bleUartId]).subscribe(device => {
-			console.log("ARG")
-			this.devices.push(device);
+		this.ble.startScan([bleSmokerUUID]).subscribe(device => {
+			this.zone.run(() => {
+				this.devices.push(device)
+			})
 		})
 	}
 	
@@ -33,28 +56,22 @@ export class BleProvider {
 	}
 	
 	startNotifications(){
-		this.ble.startNotification(this.connectedTo, bleUartId, bleUartRead).subscribe(readVal  => {
-			console.log(this.decoder.decode(readVal));
-		});
+		this.ble.startNotification(this.connectedTo, bleSmokerUUID, bleSmokerTemperatureCharacteristic).subscribe(readVal  => {
+			var dv = new DataView(readVal, 0, 2)
+			this.zone.run(() => {
+				this.temp = dv.getUint16(0)
+			})
+		})
 	}
 
 	connect(bleId){
 		return new Promise((resolve, reject) => {
 			this.ble.connect(bleId).subscribe((device) => {
+				this.storage.set(deviceStorageKey, device.id);
 				this.connectedTo = device.id;
 				this.startNotifications();
 				resolve(device);
 			})
-		})
-	}
-
-	getTemp = async function(){
-		return await this.write("!a");
-	}
-
-	write(buffer){
-		return new Promise((resolve, reject) => {
-			this.ble.write(this.connectedTo, bleUartId, bleUartWrite, this.encoder.encode(buffer).buffer);
 		})
 	}
 }

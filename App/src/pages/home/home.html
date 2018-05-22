@@ -10,7 +10,6 @@
 	<div *ngIf='!ble.connectedTo'>
 		<button ion-button *ngIf='!ble.isScanning' (click)='startScan()'>Scan for Devices</button>
 		<button ion-button *ngIf='ble.isScanning' (click)='ble.stopScan()'>Stop Scan</button>
-		<!-- Available Devices: {{devices}} -->
 	
 		<div *ngFor="let device of ble.devices" >
 			{{device.name}} 
@@ -18,7 +17,26 @@
 		</div>
 	</div>
 	<div *ngIf='ble.connectedTo'>
-		TEMP: {{temp}}
-		<button ion-button (click)='getTemp()'>getTemp</button>
+		<ion-grid>
+			<ion-row>
+				<ion-col col-12 text-center>
+					<ngx-gauge
+						[type]="gaugeType" 
+						[value]="ble.temp" 
+						[foregroundColor]="gaugeColor()"
+						[backgroundColor]="gaugeBackgroundColor"
+						[label]="gaugeLabel"  
+						[append]="gaugeAppendText"
+						[max]="maxTemp"
+						[thick]=15
+						[size]=300
+						>
+					</ngx-gauge>
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col col-12 text-center>This column will take 6 columns</ion-col>
+			</ion-row>
+		</ion-grid>
 	</div>
 </ion-content>

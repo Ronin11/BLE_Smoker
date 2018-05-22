@@ -4,13 +4,11 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#include "CommandParser.h"
-
 // Data wire is plugged into port 2 on the Arduino
 #define ONE_WIRE_BUS 2
 
 
-BLEUart bleuart;
+//BLEUart bleuart;
  
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
@@ -19,18 +17,9 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 DeviceAddress addr;
 
-// Function prototypes for packetparser.cpp
-uint8_t readPacket (BLEUart *ble_uart, uint16_t timeout);
-float   parsefloat (uint8_t *buffer);
-void    printHex   (const uint8_t * data, const uint32_t numBytes);
-
-// Function prototypes for commandParser.c
-void addCommand(char* commandString, char* (*setFunc)(char* input), char* (*getFunc)());
-char* parseCommand(char* commandString);
-
-// Packet buffer
-extern uint8_t packetbuffer[];
-bool isBleConnected = false;
+//Service Declarations
+BLEService smokerService = BLEService(0x0011);
+BLECharacteristic tempCharacteristic = BLECharacteristic(0x0012);
  
 void setup(void)
 {
@@ -50,13 +39,21 @@ void setup(void)
   Bluefruit.autoConnLed(true);
   
   // Configure and start the BLE Uart service
-  bleuart.begin();
+//  bleuart.begin();
+  smokerService.begin();
+  tempCharacteristic.setProperties(CHR_PROPS_NOTIFY);
+  tempCharacteristic.setPermission(SECMODE_OPEN, SECMODE_NO_ACCESS);
+  tempCharacteristic.setFixedLen(2);
+  tempCharacteristic.setCccdWriteCallback(cccd_callback);  // Optionally capture CCCD updates
+  tempCharacteristic.begin();
 
   // Set up and start advertising
   startAdv();
 
   //Setup commands
-  setupCommands();
+//  setupCommands();
+
+
 }
 
 void startAdv(void)
@@ -66,7 +63,8 @@ void startAdv(void)
   Bluefruit.Advertising.addTxPower();
   
   // Include the BLE UART (AKA 'NUS') 128-bit UUID
-  Bluefruit.Advertising.addService(bleuart);
+//  Bluefruit.Advertising.addService(bleuart);
+  Bluefruit.Advertising.addService(smokerService);
 
   // Secondary Scan Response packet (optional)
   // Since there is no room for 'Name' in Advertising packet
@@ -87,53 +85,40 @@ void startAdv(void)
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
 }
 
-char* getTemp(void)
+void cccd_callback(BLECharacteristic& chr, uint16_t cccd_value)
 {
-  Serial.println("BITCH");
-  return "TEMP"; 
-}
-
-void setupCommands()
-{
-  Serial.println("COMMANDS");
-  addCommand("temp", NULL, &getTemp);  
+    // Display the raw request packet
+    Serial.print("CCCD Updated: ");
+    //Serial.printBuffer(request->data, request->len);
+    Serial.print(cccd_value);
+    Serial.println("");
+ 
+    // Check the characteristic this CCCD update is associated with in case
+    // this handler is used for multiple CCCD records.
+    if (chr.uuid == tempCharacteristic.uuid) {
+        if (chr.notifyEnabled()) {
+            Serial.println("Heart Rate Measurement 'Notify' enabled");
+        } else {
+            Serial.println("Heart Rate Measurement 'Notify' disabled");
+        }
+    }
 }
  
 void loop(void)
 { 
-//  parseCommand("temp:?");
-//  delay(500);
 
-  //On connect we will request the time from the device to set the internal clock
-  if(Bluefruit.connected() && !isBleConnected){
-    isBleConnected = true;
-    Serial.println(timeStatus() == timeNotSet);
-  }else{
-    isBleConnected = Bluefruit.connected();
-  }
-     
   // call sensors.requestTemperatures() to issue a global temperature 
   // request to all devices on the bus
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  uint16_t temp = sensors.getTempCByIndex(0);
-  uint16_t farenheit = temp * 9 / 5 + 32;
-
-  
-  /* BLUETOOTH */
-  // Wait for new data to arrive
-  uint8_t len = readPacket(&bleuart, 500);
-  if (len == 0) return;
-  
-  // Got a packet!
-   if(packetbuffer[1] == 'a'){
-    char cstr[8];
-    sprintf(cstr, "temp:%03i", farenheit);
-    bleuart.write(cstr, 8);
-    Serial.println("WRITING TEMP");
-     digitalWrite(LED_BUILTIN, HIGH);
-   }else if(packetbuffer[1] == 's'){
-     digitalWrite(LED_BUILTIN, LOW);
-   }
+  if(Bluefruit.connected()){
+    sensors.requestTemperatures(); // Send the command to get temperatures
+    float temp = sensors.getTempCByIndex(0) ;
+    uint16_t farenheit = (temp * 9 / 5 + 32);
+    uint8_t arr[2];
+    arr[0]=(farenheit >> 8);
+    arr[1]=farenheit & 0xff;
+    tempCharacteristic.notify(arr, 2);
+  }
+  delay(500);
 }
 
 

@@ -3,7 +3,10 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { IonicStorageModule } from '@ionic/storage';
 import { BLE } from '@ionic-native/ble';
+
+import { NgxGaugeModule } from 'ngx-gauge';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -15,8 +18,10 @@ import { BleProvider } from '../providers/ble/ble';
     HomePage
   ],
   imports: [
-    BrowserModule,
-    IonicModule.forRoot(MyApp)
+	BrowserModule,
+	NgxGaugeModule,
+	IonicModule.forRoot(MyApp),
+	IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
