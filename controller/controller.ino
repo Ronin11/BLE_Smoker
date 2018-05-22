@@ -44,7 +44,7 @@ void setup(void)
   tempCharacteristic.setProperties(CHR_PROPS_NOTIFY);
   tempCharacteristic.setPermission(SECMODE_OPEN, SECMODE_NO_ACCESS);
   tempCharacteristic.setFixedLen(2);
-  tempCharacteristic.setCccdWriteCallback(cccd_callback);  // Optionally capture CCCD updates
+//  tempCharacteristic.setCccdWriteCallback(cccd_callback);  // Optionally capture CCCD updates
   tempCharacteristic.begin();
 
   // Set up and start advertising
@@ -83,25 +83,6 @@ void startAdv(void)
   Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
   Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
-}
-
-void cccd_callback(BLECharacteristic& chr, uint16_t cccd_value)
-{
-    // Display the raw request packet
-    Serial.print("CCCD Updated: ");
-    //Serial.printBuffer(request->data, request->len);
-    Serial.print(cccd_value);
-    Serial.println("");
- 
-    // Check the characteristic this CCCD update is associated with in case
-    // this handler is used for multiple CCCD records.
-    if (chr.uuid == tempCharacteristic.uuid) {
-        if (chr.notifyEnabled()) {
-            Serial.println("Heart Rate Measurement 'Notify' enabled");
-        } else {
-            Serial.println("Heart Rate Measurement 'Notify' disabled");
-        }
-    }
 }
  
 void loop(void)
