@@ -1,1 +1,19 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="mycontent">
+	<ion-content>
+		<ion-list>
+			<ion-list>
+				<button ion-item (click)="openCookingModal()">
+					Start Cooking
+				</button>
+				<button ion-item (click)="removeSavedDevice()">
+					Remove Saved Device
+				</button>
+				<button ion-item (click)="toggleMetric()">
+					Toggle Units
+				</button>
+			</ion-list>
+		</ion-list>
+	</ion-content>
+</ion-menu>
+
+<ion-nav #mycontent [root]="rootPage"></ion-nav>

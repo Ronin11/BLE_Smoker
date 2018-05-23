@@ -57,11 +57,6 @@ void setup(void)
 
   // Set up and start advertising
   startAdv();
-
-  //Setup commands
-//  setupCommands();
-
-
 }
 
 void startAdv(void)
@@ -124,11 +119,10 @@ void loop(void)
   // request to all devices on the bus
   if(Bluefruit.connected()){
     sensors.requestTemperatures(); // Send the command to get temperatures
-    float temp = sensors.getTempCByIndex(0) ;
-    uint16_t farenheit = (temp * 9 / 5 + 32);
+    uint16_t temp = sensors.getTempCByIndex(0) * 10; //* 10 so we send the first decimal
     uint8_t arr[2];
-    arr[0]=(farenheit >> 8);
-    arr[1]=farenheit & 0xff;
+    arr[0]=(temp >> 8);
+    arr[1]=temp & 0xff;
     tempCharacteristic.notify(arr, 2);
   }
   delay(500);

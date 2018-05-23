@@ -1,20 +1,30 @@
 <ion-header>
 	<ion-navbar>
+		<button ion-button menuToggle icon-only>
+			<ion-icon name='menu'></ion-icon>
+		</button>
 		<ion-title>
-			Ionic Blank
+			BLE Smoker
 		</ion-title>
 	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
 	<div *ngIf='!ble.connectedTo'>
-		<button ion-button *ngIf='!ble.isScanning' (click)='startScan()'>Scan for Devices</button>
-		<button ion-button *ngIf='ble.isScanning' (click)='ble.stopScan()'>Stop Scan</button>
-	
-		<div *ngFor="let device of ble.devices" >
-			{{device.name}} 
-			<button ion-button (click)='connect(device.id)'>Connect</button>
-		</div>
+		<ion-grid>
+			<ion-row>
+				<ion-col col-12 text-center>
+					<button ion-button *ngIf='!ble.isScanning' (click)='startScan()'>Scan for Devices</button>
+					<button ion-button *ngIf='ble.isScanning' (click)='ble.stopScan()'>Stop Scan</button>
+				</ion-col>
+				<ion-col col-12 text-center>
+					<div *ngFor="let device of ble.devices" >
+						{{device.name}} 
+						<button ion-button (click)='connect(device.id)'>Connect</button>
+					</div>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
 	</div>
 	<div *ngIf='ble.connectedTo'>
 		<ion-grid>
@@ -22,11 +32,11 @@
 				<ion-col col-12 text-center>
 					<ngx-gauge
 						[type]="gaugeType" 
-						[value]="ble.temp" 
+						[value]="metric.isMetric ? (ble.temp).toFixed(1) : (ble.temp * 9 / 5 + 32).toFixed(0)" 
 						[foregroundColor]="gaugeColor()"
 						[backgroundColor]="gaugeBackgroundColor"
 						[label]="gaugeLabel"  
-						[append]="gaugeAppendText"
+						[append]="metric.symbol"
 						[max]="maxTemp"
 						[thick]=15
 						[size]=300
@@ -35,7 +45,14 @@
 				</ion-col>
 			</ion-row>
 			<ion-row>
-				<ion-col col-12 text-center>This column will take 6 columns</ion-col>
+				<ion-col col-12 text-center>
+					<div *ngIf='!cook.endTime || !cook.targetTemp'>
+						<button ion-button (click)='openCookingDialog()'>Start Cooking</button>
+					</div>
+					<div *ngIf='cook.endTime && cook.targetTemp'>
+						{{cook.endTime}}, {{cook.targetTemp}}
+					</div>
+				</ion-col>
 			</ion-row>
 		</ion-grid>
 	</div>
