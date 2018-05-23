@@ -16,7 +16,7 @@ export class HomePage {
 	maxTemp = 300;
 	gaugeBackgroundColor = "#eee";
 	gaugeType = "arch";
-    gaugeLabel = "Temperature";
+    gaugeLabel = "Current Temperature";
 	gaugeAppendText = "F°";
 	metricAppendText = "C°";
 

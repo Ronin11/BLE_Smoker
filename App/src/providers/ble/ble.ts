@@ -6,6 +6,7 @@ import encoding from 'text-encoding';
 
 const bleSmokerUUID = '0011'
 const bleSmokerTemperatureCharacteristic = '0012'
+const bleSmokerTimeCharacteristic = '0013'
 
 const deviceStorageKey = 'device'
 
@@ -21,9 +22,6 @@ export class BleProvider {
 	constructor(private zone: NgZone,
 		private storage: Storage,
 		private ble: BLE) {
-			// ble.isConnected(bleSmokerUUID).then(val => {
-			// 	console.log("CONNECTED: ", val)
-			// })
 	}
 
 	isPreviousDeviceAvailable(){
@@ -64,12 +62,19 @@ export class BleProvider {
 		})
 	}
 
+	writeTime(){
+		var uint32 = new Uint32Array(1);
+		uint32[0] = Date.now()/1000;//Convert Millis to Seconds
+		this.ble.write(this.connectedTo, bleSmokerUUID, bleSmokerTimeCharacteristic, uint32.buffer)
+	}
+
 	connect(bleId){
 		return new Promise((resolve, reject) => {
 			this.ble.connect(bleId).subscribe((device) => {
 				this.storage.set(deviceStorageKey, device.id);
 				this.connectedTo = device.id;
 				this.startNotifications();
+				this.writeTime();
 				resolve(device);
 			})
 		})
