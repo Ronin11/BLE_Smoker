@@ -9,6 +9,8 @@ import encoding from 'text-encoding'
 const bleSmokerUUID = '0011'
 const bleSmokerTemperatureCharacteristic = '0012'
 const bleSmokerTimeCharacteristic = '0013'
+const targetTempCharacteristic = '0014'
+const endTimeCharacteristic = '0015'
 
 const deviceStorageKey = 'device'
 
@@ -83,6 +85,26 @@ export class BleProvider {
 			bleSmokerTimeCharacteristic, uint32.buffer)
 		.catch(err => {
 			console.log("TIME WRITE ERR: ", err)
+		})
+	}
+
+	writeTargetTemp(targetTemp){
+		var uint16 = new Uint16Array(1)
+		uint16[0] = targetTemp
+		this.ble.write(this.connectedTo, bleSmokerUUID, 
+			targetTempCharacteristic, uint16.buffer)
+		.catch(err => {
+			console.log("TARGET TEMP WRITE ERR: ", err)
+		})
+	}
+
+	writeEndTime(endTime){
+		var uint32 = new Uint32Array(1)
+		uint32[0] = endTime
+		this.ble.write(this.connectedTo, bleSmokerUUID, 
+			endTimeCharacteristic, uint32.buffer)
+		.catch(err => {
+			console.log("END TIME WRITE ERR: ", err)
 		})
 	}
 

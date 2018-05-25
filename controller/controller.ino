@@ -24,6 +24,14 @@ DeviceAddress addr;
 BLEService smokerService = BLEService(0x0011);
 BLECharacteristic tempCharacteristic = BLECharacteristic(0x0012);
 BLECharacteristic timeCharacteristic = BLECharacteristic(0x0013);
+BLECharacteristic targetTempCharacteristic = BLECharacteristic(0x0014);
+BLECharacteristic endTimeCharacteristic = BLECharacteristic(0x0015);
+
+int BLUE_LED = 3;
+int RED_LED = 4;
+uint16_t targetTemp = NULL;
+uint32_t endTime = NULL;
+
  
 void setup(void)
 {
@@ -39,7 +47,7 @@ void setup(void)
   Bluefruit.begin();
   // Set max power. Accepted values are: -40, -30, -20, -16, -12, -8, -4, 0, 4
   Bluefruit.setTxPower(4);
-  Bluefruit.setName("Super Awesome BLE");
+  Bluefruit.setName("Smart Smoker");
   Bluefruit.autoConnLed(true);
 
   //Setup all the bluetooth things
@@ -53,10 +61,24 @@ void setup(void)
   timeCharacteristic.setWriteCallback(timeWriteEvent);
   timeCharacteristic.setFixedLen(4);
   timeCharacteristic.begin();
+  targetTempCharacteristic.setProperties(CHR_PROPS_WRITE);
+  targetTempCharacteristic.setPermission(SECMODE_OPEN, SECMODE_OPEN);
+  targetTempCharacteristic.setWriteCallback(targetTempWriteEvent);
+  targetTempCharacteristic.setFixedLen(2);
+  targetTempCharacteristic.begin();
+  endTimeCharacteristic.setProperties(CHR_PROPS_WRITE);
+  endTimeCharacteristic.setPermission(SECMODE_OPEN, SECMODE_OPEN);
+  endTimeCharacteristic.setWriteCallback(endTimeWriteEvent);
+  endTimeCharacteristic.setFixedLen(4);
+  endTimeCharacteristic.begin();
   
 
   // Set up and start advertising
   startAdv();
+  pinMode(BLUE_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  digitalWrite(BLUE_LED, LOW);
+  digitalWrite(RED_LED, LOW);
 }
 
 void startAdv(void)
@@ -88,18 +110,68 @@ void startAdv(void)
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
 }
 
-union ArrayToInteger {
+union arrayToUint32 {
   byte array[4];
   uint32_t integer;
+};
+
+union arrayToUint16 {
+  byte array[2];
+  uint16_t integer;
 };
 
 void timeWriteEvent(BLECharacteristic& chr, uint8_t* data, uint16_t len, uint16_t offset){
   if(len != 4){
     return;
   }
-  ArrayToInteger converter = {data[0],data[1],data[2],data[3]}; //Create a converter
+  arrayToUint32 converter = {data[0],data[1],data[2],data[3]}; //Create a converter
   uint32_t timeSeed = converter.integer; //Read the 32bit integer value.
   setTime(timeSeed);
+}
+
+void targetTempWriteEvent(BLECharacteristic& chr, uint8_t* data, uint16_t len, uint16_t offset){
+  if(len != 2){
+    return;
+  }
+  arrayToUint16 converter = {data[0],data[1]}; //Create a converter
+  targetTemp = converter.integer; //Read the 16bit integer value.
+}
+
+void endTimeWriteEvent(BLECharacteristic& chr, uint8_t* data, uint16_t len, uint16_t offset){
+   if(len != 4){
+    return;
+  }
+  arrayToUint32 converter = {data[0],data[1],data[2],data[3]}; //Create a converter
+  endTime = converter.integer; //Read the 32bit integer value.
+
+}
+
+void increaseTemp(){
+  Serial.println("INCREASE");
+  digitalWrite(BLUE_LED, LOW);
+  digitalWrite(RED_LED, HIGH);
+}
+
+void decreaseTemp(){
+  Serial.println("DECREASE");
+  digitalWrite(BLUE_LED, HIGH);
+  digitalWrite(RED_LED, LOW);
+}
+
+void checkTemp(){
+    if(endTime < now()){
+      targetTemp = NULL;
+      endTime = NULL;
+      digitalWrite(RED_LED, LOW);
+      digitalWrite(BLUE_LED, LOW);
+      return;
+    }
+    sensors.requestTemperatures(); // Send the command to get temperatures
+    uint16_t temp = sensors.getTempCByIndex(0);
+    if(temp > targetTemp)
+      decreaseTemp();
+    else if(temp < targetTemp)
+      increaseTemp();
 }
 
 void loop(void)
@@ -113,6 +185,10 @@ void loop(void)
     Serial.print(":");
     Serial.print(second());
     Serial.print("\n");
+  }
+  
+  if(targetTemp){
+    checkTemp();  
   }
 
   // call sensors.requestTemperatures() to issue a global temperature 

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core'
+import { Component } from '@angular/core'
 import { Platform } from 'ionic-angular'
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
@@ -20,7 +20,7 @@ export class MyApp {
 		private metric: MetricProvider,
 		private ble: BleProvider,
 		public menuCtrl: MenuController,
-		public modalCtrl: ModalController,
+		public modalCtrl: ModalController, 
 		platform: Platform, 
 		statusBar: StatusBar, 
 		splashScreen: SplashScreen) {
