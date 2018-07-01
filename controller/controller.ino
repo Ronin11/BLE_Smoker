@@ -227,15 +227,16 @@ void checkTargetTemp(uint16_t temp){
       targetTemp = 0;
       startTime = 0;
       endTime = 0;
+      fanSpeed = 0;
       readTargetTempCharacteristic.write16(targetTemp);
       readStartTimeCharacteristic.write32(startTime);
       readEndTimeCharacteristic.write32(endTime);
       Serial.println("COOK DONE");
       return;
     }
-    if(temp > targetTemp){
+    if(temp > targetTemp + 3){
       decreaseTemp();
-    }else if(temp < targetTemp){
+    }else if(temp < targetTemp - 3){
       increaseTemp();
     }
 }
