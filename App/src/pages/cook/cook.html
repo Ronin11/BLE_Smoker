@@ -17,8 +17,7 @@
 				<ion-item>
 					<ion-label>Target Temperature</ion-label>
 					<ion-input type="number" class="target" 
-					[ngModel]="metric.displayTemp(ble.targetTemp)" 
-					(ngModelChange)="ble.targetTemp=metric.displayTemp($event)"></ion-input>
+					[(ngModel)]="targetTemp"></ion-input>
 				</ion-item>
 			</ion-col>
 			<ion-col col-4 text-left>
@@ -31,13 +30,13 @@
 				</ion-item> -->
 				<ion-item>
 					<ion-label>End Time</ion-label>
-					<ion-datetime displayFormat="h:mm A" [(ngModel)]="ble.endTimePickerValue"></ion-datetime>
+					<ion-datetime displayFormat="h:mm A" [(ngModel)]="endTimePickerValue"></ion-datetime>
 				</ion-item>
 			</ion-col>
 		</ion-row>
 		<ion-row>
 			<ion-col col-12 text-center>
-				<button ion-button [disabled]="ble.targetTemp == null || ble.endTimePickerValue == null" (click)="startCook()">
+				<button ion-button (click)="startCook()">
 					Start Cooking
 				</button>
 			</ion-col>

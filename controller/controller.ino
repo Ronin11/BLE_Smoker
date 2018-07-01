@@ -211,7 +211,6 @@ void increaseTemp(){
   }else if(fanSpeed < FAN_MIN_SPEED){
     fanSpeed = FAN_MIN_SPEED;
   }
-  Serial.println("INCREASE");
 }
 
 void decreaseTemp(){
@@ -220,7 +219,6 @@ void decreaseTemp(){
     if(fanSpeed < FAN_MIN_SPEED){
        fanSpeed = 0;
     }
-    Serial.println("DECREASE");
   }
 }
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core' 
 
-import { IonicPage, ViewController } from 'ionic-angular' 
+import { IonicPage, ViewController, Toast } from 'ionic-angular' 
 
 import { MetricProvider } from '../../providers/metric/metric'
 import { ToastController } from 'ionic-angular'
@@ -19,6 +19,9 @@ import { BleProvider } from '../../providers/ble/ble'
   templateUrl: 'cook.html'
 })
 export class CookPage {
+	targetTemp
+	endTimePickerValue
+	toast: Toast
 
  	 constructor(
 		private ble: BleProvider,
@@ -28,9 +31,22 @@ export class CookPage {
 	}
 	
 	startCook() {
-		this.ble.startCook()
-		this.showToast()
-		this.dismiss()
+		console.log(this.endTimePickerValue)
+		// console.log(this.targetTemp)
+		const arr = this.endTimePickerValue.split(':')
+		const date = new Date()
+		date.setHours(arr[0])
+		date.setMinutes(arr[1])
+		this.ble.endTime = (date.getTime()/1000).toFixed(0)
+		this.ble.targetTemp = this.metric.convertTemp(this.targetTemp)
+		this.ble.startTime = Date.now()/1000
+		if(this.ble.endTime > this.ble.startTime){
+			this.ble.startCook()
+			this.showToast()
+			this.dismiss()
+		}else{
+			this.showError()
+		}
 	}
 
 	dismiss() {
@@ -38,12 +54,27 @@ export class CookPage {
 	}
 
 	showToast() {
-		const toast = this.toastCtrl.create({
+		if(this.toast){
+			this.toast.dismiss()
+		}
+		this.toast = this.toastCtrl.create({
 			message: 'Cook has been started',
 			showCloseButton: true,
 			closeButtonText: 'Ok'
 		});
-		toast.present();
+		this.toast.present();
+	}
+
+	showError() {
+		if(this.toast){
+			this.toast.dismiss()
+		}
+		this.toast = this.toastCtrl.create({
+			message: 'Cook end time has to be after current time!',
+			showCloseButton: true,
+			closeButtonText: 'Ok'
+		});
+		this.toast.present();
 	}
 
 }

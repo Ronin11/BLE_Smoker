@@ -218,15 +218,7 @@ export class BleProvider {
 	}
 
 	startCook(){
-		console.log(this.endTimePickerValue)
-		const arr = this.endTimePickerValue.split(':')
-		const date = new Date()
-		date.setHours(arr[0])
-		date.setMinutes(arr[1])
-		this.startTime = Date.now()/1000
-		this.endTime = (date.getTime()/1000).toFixed(0)
 		this.countDown = this.endTime - this.startTime
-
 		if(this.countDown > 0){
 			this.writeStartTime(this.startTime)
 			this.writeEndTime(this.endTime)
@@ -244,14 +236,16 @@ export class BleProvider {
 			if (--this.countDown < 0) {
 				this.isCookDone = true
 				this.stopCountdown()
-			}
-			this.hours = Math.floor(this.countDown / 3600)
-			this.minutes = Math.floor((this.countDown % 3600) / 60)
-			this.seconds = Math.floor((this.countDown % 3600) % 60)
+			}else{
+				this.isCookDone = false
+				this.hours = Math.floor(this.countDown / 3600)
+				this.minutes = Math.floor((this.countDown % 3600) / 60)
+				this.seconds = Math.floor((this.countDown % 3600) % 60)
 
-			this.hours = this.hours < 10 ? "0" + this.hours : this.hours
-			this.minutes = this.minutes < 10 ? "0" + this.minutes : this.minutes
-			this.seconds = this.seconds < 10 ? "0" + this.seconds : this.seconds
+				this.hours = this.hours < 10 ? "0" + this.hours : this.hours
+				this.minutes = this.minutes < 10 ? "0" + this.minutes : this.minutes
+				this.seconds = this.seconds < 10 ? "0" + this.seconds : this.seconds
+			}
 		})
 	}
 

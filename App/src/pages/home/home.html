@@ -46,15 +46,15 @@
 			</ion-row>
 			<ion-row>
 				<ion-col col-12 text-center>
-					<div>
+					<!-- <div>
 						Start Time: {{ble.startTime}}
 						End Time: {{ble.endTime}}
 						Target Temp: {{ble.targetTemp}}
-					</div>
-					<div *ngIf='ble.done'>
+					</div> -->
+					<div *ngIf='ble.isCookDone'>
 						<button ion-button (click)='openCookingDialog()'>Start Cooking</button>
 					</div>
-					<div *ngIf='!ble.done'>
+					<div *ngIf='!ble.isCookDone'>
 						<h3>Time to tasty food!: {{ble.hours}}:{{ble.minutes}}:{{ble.seconds}}</h3>
 						<button ion-button (click)='openCookingDialog()'>Update Cook</button>
 					</div>
