@@ -1,0 +1,46 @@
+
+<ion-header>
+	<ion-toolbar>
+		<ion-title>Cook</ion-title>
+		<ion-buttons start>
+			<button ion-button (click)="dismiss()">
+				<span ion-text color="primary">Back</span>
+			</button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-grid>
+		<ion-row>
+			<ion-col col-8 text-center>
+				<ion-item>
+					<ion-label>Target Temperature</ion-label>
+					<ion-input type="number" class="target" 
+					[ngModel]="metric.displayTemp(ble.targetTemp)" 
+					(ngModelChange)="ble.targetTemp=metric.displayTemp($event)"></ion-input>
+				</ion-item>
+			</ion-col>
+			<ion-col col-4 text-left>
+				<h3 style="margin-top: 20px; margin-bottom: 0px;">{{metric.symbol}}</h3>
+			</ion-col>
+			<ion-col col-8 text-center>
+				<!-- <ion-item>
+					<ion-label>Start Date</ion-label>
+					<ion-datetime displayFormat="DDDD MMM DD" [(ngModel)]="asdf"></ion-datetime>
+				</ion-item> -->
+				<ion-item>
+					<ion-label>End Time</ion-label>
+					<ion-datetime displayFormat="h:mm A" [(ngModel)]="ble.endTimePickerValue"></ion-datetime>
+				</ion-item>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col col-12 text-center>
+				<button ion-button [disabled]="ble.targetTemp == null || ble.endTimePickerValue == null" (click)="startCook()">
+					Start Cooking
+				</button>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content>

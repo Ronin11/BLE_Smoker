@@ -1,4 +1,4 @@
-import { Component } from '@angular/core' 
+import { Component } from '@angular/core'
 import { Platform } from 'ionic-angular' 
 import { NavController } from 'ionic-angular' 
 import { ModalController } from 'ionic-angular' 
@@ -8,13 +8,11 @@ import { LoadingController } from 'ionic-angular'
 
 import { BleProvider } from '../../providers/ble/ble'
 import { MetricProvider } from '../../providers/metric/metric'
-import { CookProvider } from '../../providers/cook/cook';
 
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html',
-  providers: [BleProvider]
+  templateUrl: 'home.html'
 })
 export class HomePage {
 	maxTemp = 300 
@@ -22,19 +20,19 @@ export class HomePage {
 	gaugeType = "arch" 
 	currentGaugeLabel = "Current Temperature" 
 	gaugeLabel = this.currentGaugeLabel
+	color = "#FF0000"
 
 
-  constructor(
-	private ble: BleProvider,
-	private cook: CookProvider,
-	private metric: MetricProvider, 
-	public modalCtrl: ModalController,
-	public platform: Platform,
-	public loadingCtrl: LoadingController,
-	public navCtrl: NavController) {
-		this.ble.isPreviousDeviceAvailable().then(savedDevice => {
-			this.connect(savedDevice)
-		})
+	constructor(
+		private ble: BleProvider,
+		private metric: MetricProvider, 
+		public modalCtrl: ModalController,
+		public platform: Platform,
+		public loadingCtrl: LoadingController,
+		public navCtrl: NavController) {
+			this.ble.isPreviousDeviceAvailable().then(savedDevice => {
+				this.connect(savedDevice)
+			})
 	}
 
 	startScan(){

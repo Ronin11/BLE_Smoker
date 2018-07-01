@@ -1,16 +1,23 @@
 import { Injectable, NgZone } from '@angular/core' 
+import { Observable } from 'rxjs'
 import { Storage } from '@ionic/storage' 
 import { BLE } from '@ionic-native/ble' 
 
 import { AlertController } from 'ionic-angular' 
 
 import encoding from 'text-encoding' 
+import { MetricProvider } from '../metric/metric';
 
 const bleSmokerUUID = '0011'
-const bleSmokerTemperatureCharacteristic = '0012'
-const bleSmokerTimeCharacteristic = '0013'
-const targetTempCharacteristic = '0014'
-const endTimeCharacteristic = '0015'
+const readTempCharacteristic = '0012'
+const writeTimeCharacteristic = '0013'
+const readTargetTempCharacteristic = '0014'
+const writeTargetTempCharacteristic = '0015'
+const readStartTimeCharacteristic = '0016'
+const writeStartTimeCharacteristic = '0017'
+const readEndTimeCharacteristic = '0018'
+const writeEndTimeCharacteristic = '0019'
+const writeFanSpeedCharacteristic = '0020'
 
 const deviceStorageKey = 'device'
 
@@ -18,12 +25,24 @@ const deviceStorageKey = 'device'
 export class BleProvider {
 	devices = [] 
 	isScanning = false 
-	connectedTo = null 
-	decoder = new encoding.TextDecoder() 
-	encoder = new encoding.TextEncoder() 
-	temp = 0 
+	connectedTo = null
 
-	constructor(private zone: NgZone,
+	temp = 0
+	startTime = null
+	endTime = null
+	endTimePickerValue = null
+	targetTemp = null
+
+	countDown = null
+	timer = null
+	isCookDone = true
+	hours: any
+	minutes: any
+	seconds: any
+
+	constructor(
+		private metric: MetricProvider,
+		private zone: NgZone,
 		private storage: Storage,
 		private ble: BLE,
 		public alertCtrl: AlertController) {
@@ -70,10 +89,10 @@ export class BleProvider {
 	}
 	
 	startNotifications(){
-		this.ble.startNotification(this.connectedTo, bleSmokerUUID, bleSmokerTemperatureCharacteristic).subscribe(readVal  => {
+		this.ble.startNotification(this.connectedTo, bleSmokerUUID, readTempCharacteristic).subscribe(readVal  => {
 			var dv = new DataView(readVal, 0, 2)
 			this.zone.run(() => {
-				this.temp = dv.getUint16(0) / 10 //divide by 10 to get decimal
+				this.temp = dv.getUint16(0, true) / 10 //divide by 10 to get decimal
 			})
 		})
 	}
@@ -82,19 +101,66 @@ export class BleProvider {
 		var uint32 = new Uint32Array(1) 
 		uint32[0] = Date.now()/1000 //Convert Millis to Seconds
 		this.ble.write(this.connectedTo, bleSmokerUUID, 
-			bleSmokerTimeCharacteristic, uint32.buffer)
+			writeTimeCharacteristic, uint32.buffer)
 		.catch(err => {
 			console.log("TIME WRITE ERR: ", err)
 		})
 	}
 
+	readTargetTemp(){
+		this.ble.read(this.connectedTo, bleSmokerUUID, readTargetTempCharacteristic)
+		.then(data => {
+			var dv = new DataView(data, 0, 2)
+			this.zone.run(() => {
+				this.targetTemp = dv.getUint16(0, true) / 10 //divide by 10 to get decimal
+			})
+		}).catch(err => {
+			console.log("TARGET TEMP READ ERR: ", err)
+		})
+	}
+
 	writeTargetTemp(targetTemp){
 		var uint16 = new Uint16Array(1)
-		uint16[0] = targetTemp
+		uint16[0] = (targetTemp * 10)
 		this.ble.write(this.connectedTo, bleSmokerUUID, 
-			targetTempCharacteristic, uint16.buffer)
+			writeTargetTempCharacteristic, uint16.buffer)
 		.catch(err => {
 			console.log("TARGET TEMP WRITE ERR: ", err)
+		})
+	}
+
+	readStartTime(){
+		this.ble.read(this.connectedTo, bleSmokerUUID, readStartTimeCharacteristic)
+		.then(data => {
+			var dv = new DataView(data, 0, 4)
+			this.zone.run(() => {
+				this.startTime = dv.getUint32(0, true)
+			})
+		}).catch(err => {
+			console.log("START TIME READ ERR: ", err)
+		})
+	}
+
+	writeStartTime(startTime){
+		var uint32 = new Uint32Array(1)
+		uint32[0] = startTime
+		this.ble.write(this.connectedTo, bleSmokerUUID, 
+			writeStartTimeCharacteristic, uint32.buffer)
+		.catch(err => {
+			console.log("START TIME WRITE ERR: ", err)
+		})
+	}
+
+	readEndTime(){
+		this.ble.read(this.connectedTo, bleSmokerUUID, readEndTimeCharacteristic)
+		.then(data => {
+			var dv = new DataView(data, 0, 4)
+			this.zone.run(() => {
+				this.endTime = dv.getUint32(0, true)
+				this.startCountdown()
+			})
+		}).catch(err => {
+			console.log("END TIME READ ERR: ", err)
 		})
 	}
 
@@ -102,10 +168,22 @@ export class BleProvider {
 		var uint32 = new Uint32Array(1)
 		uint32[0] = endTime
 		this.ble.write(this.connectedTo, bleSmokerUUID, 
-			endTimeCharacteristic, uint32.buffer)
+			writeEndTimeCharacteristic, uint32.buffer)
 		.catch(err => {
 			console.log("END TIME WRITE ERR: ", err)
 		})
+	}
+
+	writeFanSpeed(speed){
+		if(speed > 100){
+			speed = 100
+		}else if(speed < 0){
+			speed = 0
+		}
+		var uint8 = new Uint8Array(1)
+		uint8[0] = speed
+		this.ble.write(this.connectedTo, bleSmokerUUID,
+			writeFanSpeedCharacteristic, uint8.buffer)
 	}
 
 	connect(bleId){
@@ -116,6 +194,11 @@ export class BleProvider {
 				this.connectedTo = device.id
 				this.startNotifications()
 				this.writeTime()
+				this.readTargetTemp()
+				this.readStartTime()
+				this.readEndTime()
+
+				// this.writeFanSpeed(100)
 				resolve(device)
 			}, err => {
 				console.log("CONNECT ERROR: ", err)
@@ -132,5 +215,47 @@ export class BleProvider {
 		  buttons: ['OK']
 		}) 
 		alert.present() 
+	}
+
+	startCook(){
+		console.log(this.endTimePickerValue)
+		const arr = this.endTimePickerValue.split(':')
+		const date = new Date()
+		date.setHours(arr[0])
+		date.setMinutes(arr[1])
+		this.startTime = Date.now()/1000
+		this.endTime = (date.getTime()/1000).toFixed(0)
+		this.countDown = this.endTime - this.startTime
+
+		if(this.countDown > 0){
+			this.writeStartTime(this.startTime)
+			this.writeEndTime(this.endTime)
+			this.writeTargetTemp(this.targetTemp)
+			this.isCookDone = false
+			this.startCountdown()
+		}else{
+			throw("TIME IS BAD")
+		}
+	}
+
+	startCountdown(){
+		this.countDown = this.endTime - Date.now()/1000
+		this.timer = Observable.interval(1000).subscribe(x => {
+			if (--this.countDown < 0) {
+				this.isCookDone = true
+				this.stopCountdown()
+			}
+			this.hours = Math.floor(this.countDown / 3600)
+			this.minutes = Math.floor((this.countDown % 3600) / 60)
+			this.seconds = Math.floor((this.countDown % 3600) % 60)
+
+			this.hours = this.hours < 10 ? "0" + this.hours : this.hours
+			this.minutes = this.minutes < 10 ? "0" + this.minutes : this.minutes
+			this.seconds = this.seconds < 10 ? "0" + this.seconds : this.seconds
+		})
+	}
+
+	stopCountdown(){
+		this.timer.unsubscribe()
 	}
 }

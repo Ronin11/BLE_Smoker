@@ -13,36 +13,37 @@ import { NgxGaugeModule } from 'ngx-gauge'
 import { MyApp } from './app.component' 
 import { HomePage } from '../pages/home/home' 
 import { CookPage } from '../pages/cook/cook' 
+import { ManualPage } from '../pages/manual/manual' 
 import { BleProvider } from '../providers/ble/ble'
-import { MetricProvider } from '../providers/metric/metric';
-import { CookProvider } from '../providers/cook/cook'; 
+import { MetricProvider } from '../providers/metric/metric'
 
 @NgModule({
-  declarations: [
-    MyApp,
-	HomePage,
-	CookPage
-  ],
-  imports: [
-	BrowserModule,
-	NgxGaugeModule,
-	IonicModule.forRoot(MyApp),
-	IonicStorageModule.forRoot()
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-	HomePage,
-	CookPage
-  ],
-  providers: [
-	BLE,
-    StatusBar,
-    SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    BleProvider,
-    MetricProvider,
-    CookProvider
-  ]
+	declarations: [
+		MyApp,
+		HomePage,
+		CookPage,
+		ManualPage
+	],
+	imports: [
+		BrowserModule,
+		NgxGaugeModule,
+		IonicModule.forRoot(MyApp),
+		IonicStorageModule.forRoot()
+	],
+	bootstrap: [IonicApp],
+	entryComponents: [
+		MyApp,
+		HomePage,
+		CookPage,
+		ManualPage
+	],
+	providers: [
+		BLE,
+		StatusBar,
+		SplashScreen,
+		{provide: ErrorHandler, useClass: IonicErrorHandler},
+		BleProvider,
+		MetricProvider
+	]
 })
 export class AppModule {}

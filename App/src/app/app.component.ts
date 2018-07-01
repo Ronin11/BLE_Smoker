@@ -1,19 +1,22 @@
-import { Component } from '@angular/core'
+import { Component, ViewChild } from '@angular/core'
 import { Platform } from 'ionic-angular'
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { MenuController } from 'ionic-angular'
 import { ModalController } from 'ionic-angular'
+import { Nav } from 'ionic-angular'
 
 import { HomePage } from '../pages/home/home'
-import { CookPage } from '../pages/cook/cook';
-import { BleProvider } from '../providers/ble/ble';
-import { MetricProvider } from '../providers/metric/metric';
+import { CookPage } from '../pages/cook/cook'
+import { ManualPage } from '../pages/manual/manual'
+import { BleProvider } from '../providers/ble/ble'
+import { MetricProvider } from '../providers/metric/metric'
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
+	@ViewChild(Nav) nav: Nav;
 	rootPage:any = HomePage 
 
 	constructor(
@@ -43,6 +46,11 @@ export class MyApp {
 	openCookingModal(){
 		let modal = this.modalCtrl.create(CookPage) 
 		modal.present() 
+	}
+
+	navigateToManualPage(){
+		this.nav.push(ManualPage)
+		this.closeMenu()
 	}
 
 	removeSavedDevice(){
