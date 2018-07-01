@@ -250,7 +250,7 @@ void checkTempStatus(){
   sensors.requestTemperatures(); // Send the command to get temperatures
   uint16_t temp = sensors.getTempCByIndex(0) * 10; //* 10 so we send the first decimal
   if(targetTemp){
-    if(count % 10000 == 0){
+    if(count % 50000 == 0){
       checkTargetTemp(temp/10);  
     }
   }
