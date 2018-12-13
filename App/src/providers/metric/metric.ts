@@ -31,4 +31,11 @@ export class MetricProvider {
 			return (temp * 9 / 5 + 32).toFixed(0)
 		}
 	}
+	celsiusToFarenheit(temp){
+		return ((temp - 32) * 5 / 9).toFixed(0)
+	}
+
+	farenheitToCelsius(temp){
+		return (temp * 9 / 5 + 32).toFixed(0)
+	}
 }

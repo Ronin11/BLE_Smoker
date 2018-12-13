@@ -5,7 +5,6 @@ import { BLE } from '@ionic-native/ble'
 
 import { AlertController } from 'ionic-angular' 
 
-import encoding from 'text-encoding' 
 import { MetricProvider } from '../metric/metric';
 
 const bleSmokerUUID = '0011'
