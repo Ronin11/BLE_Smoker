@@ -1,25 +1,14 @@
-<ion-header>
-	<ion-navbar>
-		<button ion-button menuToggle icon-only>
-			<ion-icon name='menu'></ion-icon>
-		</button>
-		<ion-title>
-			Smart Smoker
-		</ion-title>
-	</ion-navbar>
-</ion-header>
-
 <ion-content padding>
 	<ion-grid>
 		<ion-row>
 			<ion-col col-12 text-center>
 				<ngx-gauge
 					[type]="gaugeType" 
-					[value]="metric.displayTemp(ble.temp)"
+					[value]="convertTemp(settings.units, 100)"
 					[foregroundColor]="color"
 					[backgroundColor]="gaugeBackgroundColor"
 					[label]="gaugeLabel"  
-					[append]="metric.symbol"
+					[append]="temperatureSymbols[settings.units]"
 					[max]="maxTemp"
 					[thick]=15
 					[size]=300
@@ -27,13 +16,13 @@
 				</ngx-gauge>
 			</ion-col>
 		</ion-row>
-		<ion-row>
+		<!-- <ion-row>
 			<ion-col col-12 text-center>
-				<!-- <div>
+				<div>
 					Start Time: {{ble.startTime}}
 					End Time: {{ble.endTime}}
 					Target Temp: {{ble.targetTemp}}
-				</div> -->
+				</div>
 				<div *ngIf='ble.isCookDone'>
 					<button ion-button (click)='openCookingDialog()'>Start Cooking</button>
 				</div>
@@ -42,6 +31,6 @@
 					<button ion-button (click)='openCookingDialog()'>Update Cook</button>
 				</div>
 			</ion-col>
-		</ion-row>
+		</ion-row> -->
 	</ion-grid>
 </ion-content>

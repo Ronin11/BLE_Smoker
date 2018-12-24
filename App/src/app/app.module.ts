@@ -7,6 +7,8 @@ import { IonicStorageModule } from '@ionic/storage'
 import { BLE } from '@ionic-native/ble' 
 import { HTTP } from '@ionic-native/http'
 
+import { SuperTabsModule } from 'ionic2-super-tabs'
+
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular' 
 
 import { NgxGaugeModule } from 'ngx-gauge' 
@@ -39,7 +41,8 @@ import { CommsProvider } from '../providers/comms/comms'
 		BrowserModule,
 		NgxGaugeModule,
 		IonicModule.forRoot(MyApp),
-		IonicStorageModule.forRoot()
+		IonicStorageModule.forRoot(),
+		SuperTabsModule.forRoot()
 	],
 	bootstrap: [IonicApp],
 	entryComponents: [

@@ -1,11 +1,11 @@
 <div *ngIf='!commsProvider.isConnected()'>
 	Connecting....
 </div>
-<div *ngIf='commsProvider.isConnected()'>
-	<ion-tabs>
-		<ion-tab tabIcon="home" tabTitle="Home" [root]="homePage"></ion-tab>
-		<ion-tab tabIcon="bonfire" tabTitle="Cook"[root]="cookPage"></ion-tab>
-		<ion-tab tabIcon="analytics" tabTitle="Graphs"[root]="graphPage"></ion-tab>
-		<ion-tab tabIcon="settings" tabTitle="Settings" [root]="settingsPage"></ion-tab>
-	</ion-tabs>
-</div>
+<ion-content *ngIf='commsProvider.isConnected()'>
+	<super-tabs>
+		<super-tab icon="home" title="Home" [root]="homePage"></super-tab>
+		<super-tab icon="bonfire" title="Cook"[root]="cookPage"></super-tab>
+		<super-tab icon="analytics" title="Graphs"[root]="graphPage"></super-tab>
+		<super-tab icon="settings" title="Settings" [root]="settingsPage"></super-tab>
+	</super-tabs>
+</ion-content>

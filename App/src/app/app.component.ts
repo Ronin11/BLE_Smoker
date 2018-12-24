@@ -11,19 +11,18 @@ import { CookPage } from '../pages/cook/cook'
 import { GraphPage } from '../pages/graph/graph'
 import { SettingsPage } from '../pages/settings/settings'
 import { CommsProvider } from '../providers/comms/comms'
-
+import { SettingsProvider } from '../providers/settings/settings'
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-	@ViewChild(Nav) nav: Nav;
+	@ViewChild(Nav) nav: Nav
 
 	homePage = HomePage
 	cookPage = CookPage
 	graphPage = GraphPage
 	settingsPage = SettingsPage
-
 
 	constructor(
 		private commsProvider: CommsProvider,
