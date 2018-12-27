@@ -16,15 +16,17 @@ import { NgxGaugeModule } from 'ngx-gauge'
 import { MyApp } from './app.component' 
 import { HomePage } from '../pages/home/home' 
 import { CookPage } from '../pages/cook/cook'
+import { CookSummaryPage } from '../pages/cook-summary/cook-summary'
 import { GraphPage } from '../pages/graph/graph'
 import { ManualPage } from '../pages/manual/manual'
 import { ConnectPage } from '../pages/connect/connect'
 import { SettingsPage } from '../pages/settings/settings'
 
 import { BleProvider } from '../providers/ble/ble'
-import { MetricProvider } from '../providers/metric/metric'
 import { SettingsProvider } from '../providers/settings/settings'
 import { CommsProvider } from '../providers/comms/comms'
+import { TemperatureProvider } from '../providers/temperature/temperature'
+import { CookProvider } from '../providers/cook/cook'
 
 
 @NgModule({
@@ -33,6 +35,7 @@ import { CommsProvider } from '../providers/comms/comms'
 		HomePage,
 		ConnectPage,
 		CookPage,
+		CookSummaryPage,
 		GraphPage,
 		SettingsPage,
 		ManualPage
@@ -50,6 +53,7 @@ import { CommsProvider } from '../providers/comms/comms'
 		HomePage,
 		ConnectPage,
 		CookPage,
+		CookSummaryPage,
 		GraphPage,
 		SettingsPage,
 		ManualPage
@@ -61,9 +65,10 @@ import { CommsProvider } from '../providers/comms/comms'
 		SplashScreen,
 		{provide: ErrorHandler, useClass: IonicErrorHandler},
 		BleProvider,
-		MetricProvider,
 		SettingsProvider,
-		CommsProvider
+		CommsProvider,
+    	TemperatureProvider,
+    	CookProvider
 	]
 })
 export class AppModule {}

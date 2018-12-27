@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core'
 export class CommsProvider {
 
 	connected = true
-	temps = [100]
 
 	constructor(
 		private ble: BLE,

@@ -1,3 +1,39 @@
 page-graph {
+	ion-card-header {
+		display: flex;
+		flex-direction: row;
+		span {
+			width: 100%;
+			justify-content: stretch;
+		}
+		button.expand {
+			min-width: 50px;
+		}
+		button.edit {
+			min-width: 70px;
+		}
+	}
+	ion-card-content {
+		display: flex;
+		flex-direction: column;
+		span {
+			width: 100%;
+			justify-content: stretch;
+		}
+		button.edit {
+			justify-content: flex-end;
+		}
+	}
+}
 
+.ios, .md {
+	page-home {
+		.scroll-content {
+			background-color: map-get($colors, light);
+		}
+
+		ion-card-header {
+			font-weight: bold;
+		}
+	}
 }

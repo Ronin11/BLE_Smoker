@@ -3,7 +3,7 @@
     <name>BLE_SmokerApp</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content original-src="index.html" src="http://10.0.1.187:8100" />
+    <content original-src="index.html" src="http://192.168.1.6:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -82,7 +82,7 @@
     <allow-navigation href="http://192.168.1.4:8100" />
     <allow-navigation href="http://10.10.10.1:8100" />
     <allow-navigation href="http://10.0.1.62:8100" />
-    <allow-navigation href="http://10.0.1.187:8100" sessionid="1bebf196" />
+    <allow-navigation href="http://192.168.1.6:8100" sessionid="d6f6bce9" />
     <engine name="android" spec="^7.1.4" />
     <engine name="ios" spec="^4.5.5" />
     <plugin name="com.telerik.plugins.nativepagetransitions" spec="^0.6.5" />

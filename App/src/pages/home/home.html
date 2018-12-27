@@ -1,36 +1,58 @@
 <ion-content padding>
 	<ion-grid>
-		<ion-row>
+		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.STOPPED">
+			<ion-col col-12 text-center>
+				Start your day with a smoke
+			</ion-col>
+			<ion-col col-12 text-center>
+				<button ion-button (click)="navigateToCook()">
+					Start Cooking 
+				</button>
+			</ion-col>
+		</ion-row>
+		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.PAUSED">
+			<ion-col col-12 text-center>
+				Autoresuming Cook in: {{cookProvider.formattedAutoResumeTimeLeft}}
+			</ion-col>		
+			<ion-col col-6 text-center>
+				<button ion-button icon-end (click)="cookProvider.resumeCook()">
+					Resume Cook 
+					<ion-icon name="play"></ion-icon>
+				</button>
+			</ion-col>			
+			<ion-col col-6 text-center>
+				<button ion-button icon-end (click)="cookProvider.stopCook()">
+					Stop Cook 
+					<ion-icon name="close"></ion-icon>
+				</button>
+			</ion-col>
+		</ion-row>
+		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.RUNNING">
+			<ion-col col-12 text-center>
+				Cook Running!
+			</ion-col>
+			<ion-col col-12 text-center>
+				<button ion-button icon-end (click)="cookProvider.pauseCook()">
+					Pause Cook 
+					<ion-icon name="pause"></ion-icon>
+				</button>
+			</ion-col>
+		</ion-row>
+		<ion-row *ngFor="let temperature of temperatureProvider.currentTemperatures">
 			<ion-col col-12 text-center>
 				<ngx-gauge
 					[type]="gaugeType" 
-					[value]="convertTemp(settings.units, 100)"
+					[value]="convertTemp(settings.units, temperature.value)"
 					[foregroundColor]="color"
 					[backgroundColor]="gaugeBackgroundColor"
-					[label]="gaugeLabel"  
+					[label]="temperature.name"  
 					[append]="temperatureSymbols[settings.units]"
-					[max]="maxTemp"
+					[max]="convertTemp(settings.units, 200)"
 					[thick]=15
 					[size]=300
 					>
 				</ngx-gauge>
 			</ion-col>
 		</ion-row>
-		<!-- <ion-row>
-			<ion-col col-12 text-center>
-				<div>
-					Start Time: {{ble.startTime}}
-					End Time: {{ble.endTime}}
-					Target Temp: {{ble.targetTemp}}
-				</div>
-				<div *ngIf='ble.isCookDone'>
-					<button ion-button (click)='openCookingDialog()'>Start Cooking</button>
-				</div>
-				<div *ngIf='!ble.isCookDone'>
-					<h3>Time to tasty food!: {{ble.hours}}:{{ble.minutes}}:{{ble.seconds}}</h3>
-					<button ion-button (click)='openCookingDialog()'>Update Cook</button>
-				</div>
-			</ion-col>
-		</ion-row> -->
 	</ion-grid>
 </ion-content>

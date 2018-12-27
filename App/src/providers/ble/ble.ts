@@ -5,7 +5,6 @@ import { BLE } from '@ionic-native/ble'
 
 import { AlertController } from 'ionic-angular' 
 
-import { MetricProvider } from '../metric/metric';
 
 const bleSmokerUUID = '0011'
 const readTempCharacteristic = '0012'
@@ -40,7 +39,6 @@ export class BleProvider {
 	seconds: any
 
 	constructor(
-		private metric: MetricProvider,
 		private zone: NgZone,
 		private storage: Storage,
 		private ble: BLE,

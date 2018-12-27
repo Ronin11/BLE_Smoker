@@ -1,17 +1,20 @@
 import { Component } from '@angular/core' 
 
-import { IonicPage, ViewController, Toast } from 'ionic-angular' 
+import {
+	IonicPage,
+	ModalController,
+	ViewController,
+	ToastController,
+	Toast,
+	Events
+} from 'ionic-angular' 
 
-import { MetricProvider } from '../../providers/metric/metric'
-import { ToastController } from 'ionic-angular'
-import { BleProvider } from '../../providers/ble/ble'
+import { SettingsProvider } from '../../providers/settings/settings'
+import { CookProvider, EndConditions, EndCondition } from '../../providers/cook/cook'
+import { HomePage } from '../home/home'
+import { CookSummaryPage } from '../cook-summary/cook-summary'
 
-/**
- * Generated class for the CookPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { temperatureSymbols } from '../../helpers/temperature'
 
 @IonicPage()
 @Component({
@@ -19,38 +22,31 @@ import { BleProvider } from '../../providers/ble/ble'
   templateUrl: 'cook.html'
 })
 export class CookPage {
-	targetTemp
-	endTimePickerValue
 	toast: Toast
+	validated = true
+
+	EndCondition = EndCondition
+	EndConditions = EndConditions
+	temperatureSymbols = temperatureSymbols
 
  	 constructor(
-		private ble: BleProvider,
-		private metric: MetricProvider,
+		public modalCtrl: ModalController,
+		private settings: SettingsProvider,
+		private cookProvider: CookProvider,
 		public toastCtrl: ToastController,
-		public viewCtrl: ViewController) {
-	}
-	
-	startCook() {
-		console.log(this.endTimePickerValue)
-		// console.log(this.targetTemp)
-		const arr = this.endTimePickerValue.split(':')
-		const date = new Date()
-		date.setHours(arr[0])
-		date.setMinutes(arr[1])
-		this.ble.endTime = (date.getTime()/1000).toFixed(0)
-		this.ble.targetTemp = this.metric.convertTemp(this.targetTemp)
-		this.ble.startTime = Date.now()/1000
-		if(this.ble.endTime > this.ble.startTime){
-			this.ble.startCook()
-			this.showToast()
-			this.dismiss()
-		}else{
-			this.showError()
-		}
+		public events: Events) {
 	}
 
-	dismiss() {
-		this.viewCtrl.dismiss()
+	startCook() {
+		const cookSummaryModal = this.modalCtrl.create(CookSummaryPage)
+		cookSummaryModal.onDidDismiss(showToast => {
+			if(showToast){
+				this.cookProvider.startCook()
+				this.events.publish('nav:swipeTo', HomePage);
+				this.showToast()
+			}
+	   });
+		cookSummaryModal.present()
 	}
 
 	showToast() {
@@ -62,19 +58,6 @@ export class CookPage {
 			showCloseButton: true,
 			closeButtonText: 'Ok'
 		});
-		this.toast.present();
+		this.toast.present()
 	}
-
-	showError() {
-		if(this.toast){
-			this.toast.dismiss()
-		}
-		this.toast = this.toastCtrl.create({
-			message: 'Cook end time has to be after current time!',
-			showCloseButton: true,
-			closeButtonText: 'Ok'
-		});
-		this.toast.present();
-	}
-
 }

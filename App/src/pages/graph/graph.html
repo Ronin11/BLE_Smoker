@@ -1,3 +1,27 @@
-<ion-content padding>
-	Graph Page Content
+<ion-content> 
+	<ion-card *ngFor="let graph of graphs">
+		<ion-card-header>
+			<h1>{{graph.data.date}} - {{graph.data.name}}</h1>
+			<span></span>
+			<button class="expand" (click)="collapseCard(graph)" icon-start *ngIf='graph.expanded'>
+				<ion-icon name="arrow-up"></ion-icon>
+			</button>
+			<button class="expand" (click)="expandCard(graph)" icon-start *ngIf='!graph.expanded'>
+				<ion-icon name="arrow-down"></ion-icon>
+			</button>
+		</ion-card-header>
+		<ion-card-content>
+			<canvas #graphCanvas></canvas>
+			<div *ngIf='graph.expanded'>
+				<h2 ion-text>Notes:</h2> 
+				<p ion-text>
+					{{graph.data.notes}}
+				</p>
+				<button ion-button icon-start>
+					<ion-icon name="create"></ion-icon>
+					Edit
+				</button>
+			</div>
+		</ion-card-content>
+	</ion-card>
 </ion-content>

@@ -3,9 +3,6 @@
 </div>
 <ion-content *ngIf='commsProvider.isConnected()'>
 	<super-tabs>
-		<super-tab icon="home" title="Home" [root]="homePage"></super-tab>
-		<super-tab icon="bonfire" title="Cook"[root]="cookPage"></super-tab>
-		<super-tab icon="analytics" title="Graphs"[root]="graphPage"></super-tab>
-		<super-tab icon="settings" title="Settings" [root]="settingsPage"></super-tab>
+		<super-tab *ngFor="let page of pages" [icon]="page.icon" [title]="page.title" [root]="page.root"></super-tab>
 	</super-tabs>
 </ion-content>

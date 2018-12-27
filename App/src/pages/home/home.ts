@@ -1,41 +1,50 @@
-import { Component } from '@angular/core'
-import { NavController } from 'ionic-angular'
+import { Component, ViewChild } from '@angular/core'
 
-import { LoadingController } from 'ionic-angular' 
+import { 
+	NavController, 
+	LoadingController, 
+	Events 
+} from 'ionic-angular' 
 
+import { CookPage } from '../cook/cook'
 import { SettingsProvider } from '../../providers/settings/settings'
+import { TemperatureProvider } from '../../providers/temperature/temperature'
+import { CookProvider, CookStatus } from '../../providers/cook/cook'
 
 import { 
 	convertTemp,
 	temperatureSymbols
 } from '../../helpers/temperature'
-import { CommsProvider } from '../../providers/comms/comms'
+
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-	maxTemp = 300 
+
 	gaugeBackgroundColor = "#eee" 
 	gaugeType = "arch" 
 	currentGaugeLabel = "Current Temperature" 
 	gaugeLabel = this.currentGaugeLabel
 	color = "#FF0000"
 
+	//Done to bring into scope for the markup
 	temperatureSymbols = temperatureSymbols
 	convertTemp = convertTemp
-
+	CookStatus = CookStatus
 
 	constructor(
-		private comms: CommsProvider,
+		private cookProvider: CookProvider,
+		private temperatureProvider: TemperatureProvider,
 		private settings: SettingsProvider,
 		public loadingCtrl: LoadingController,
-		public navCtrl: NavController
+		public navCtrl: NavController,
+		public events: Events
 	) {}
 
-	func(temp){
-		return temp
+	navigateToCook(){
+		this.events.publish('nav:swipeTo', CookPage);
 	}
 
 	// gaugeColor(){

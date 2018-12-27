@@ -1,8 +1,8 @@
-const farenheit = "farenheit"
+export const farenheit = "farenheit"
 export const farenheitSymbol = "F°" 
-const celsius = "celsius"
+export const celsius = "celsius"
 export const celsiusSymbol = "C°" 
-const kelvin = "kelvin"
+export const kelvin = "kelvin"
 export const kelvinSymbol = "K°"
 
 export const temperatureSymbols = {
