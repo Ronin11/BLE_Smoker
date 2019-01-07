@@ -9,7 +9,7 @@ import { SettingsProvider } from '../../providers/settings/settings'
   templateUrl: 'settings.html',
 })
 export class SettingsPage {
-	
+
 	constructor(private settings: SettingsProvider) {
 
 	}

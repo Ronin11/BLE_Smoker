@@ -1,25 +1,36 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component } from '@angular/core'
+import { IonicPage, ViewController } from 'ionic-angular'
 
-/**
- * Generated class for the ConnectPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { SpinnerDialog } from '@ionic-native/spinner-dialog'
+
+import { CommsProvider } from '../../providers/comms/comms'
+
 
 @IonicPage()
 @Component({
-  selector: 'page-connect',
-  templateUrl: 'connect.html',
+	selector: 'page-connect',
+	templateUrl: 'connect.html',
 })
 export class ConnectPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+	constructor(
+		private viewCtrl: ViewController,
+		private spinnerDialog: SpinnerDialog,
+		private comms: CommsProvider
+		) {
+			comms.ble.startScan()
+	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ConnectPage');
-  }
+	connect(device){
+		this.spinnerDialog.show("Connecting...")
+		this.comms.connectToDevice(device, () => {
+			this.spinnerDialog.hide()
+			this.closeModal()
+		})
+	}
+
+	closeModal(){
+		this.viewCtrl.dismiss()
+	}
 
 }

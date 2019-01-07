@@ -1,7 +1,38 @@
 page-cook {
+	.submit {
+		display: flex;
+		justify-content: center;
+		margin-top: 25px;
+		margin-bottom: 25px;
+	}
 	.segment {
 		margin-bottom: 50px;
 	}
+
+	.error {
+		color: red
+	}
+
+	ion-content{
+		margin-top: 25px;
+	}
+	ion-item {
+		max-width: 100%;
+		width: 100%;
+	}
+	 ion-select{
+		max-width: 55%;
+		width: 55%;
+		text-align: right;
+	 }
+	 ion-input{
+		 input{
+		 	text-align: right;
+		 }
+	 }
+	 ion-icon.tempSymbol{
+		 font-size: 22px;
+	 }
 }
 
 

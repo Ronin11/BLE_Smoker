@@ -22,6 +22,17 @@ export function convertTemp(units, temp){
 	}
 }
 
+export function convertToCelsius(units, temp){
+	switch(units){
+		case farenheit:
+			return farenheitToCelsius(temp)
+		case celsius:
+			return temp
+		case kelvin:
+			return kelvinToCelsius(temp)
+	}
+}
+
 export function farenheitToCelsius(temp){
 	return Number(((temp - 32) * 5 / 9).toFixed(0))
 }

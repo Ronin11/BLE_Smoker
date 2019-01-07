@@ -1,0 +1,25 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>
+			<div class="title">
+				<h2 ion-text>Edit Notes</h2>
+				<!-- <ion-icon class="close" name="close" (click)="closeModal()"></ion-icon> -->
+			</div>
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+	<ion-item>
+		<ion-textarea autosize [(ngModel)]="datum.notes"
+		(ngModelChange)="dataProvider.updateDatum(datum.id)"
+		></ion-textarea>
+	</ion-item>
+	<div class="footer">
+		<button (click)="closeModal()" class="ok" ion-button>
+			Ok
+		</button>
+	</div>
+</ion-content>
+

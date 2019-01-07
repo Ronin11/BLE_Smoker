@@ -1,8 +1,6 @@
-<div *ngIf='!commsProvider.isConnected()'>
-	Connecting....
-</div>
-<ion-content *ngIf='commsProvider.isConnected()'>
+<ion-content>
 	<super-tabs>
-		<super-tab *ngFor="let page of pages" [icon]="page.icon" [title]="page.title" [root]="page.root"></super-tab>
+		<super-tab *ngFor="let page of pages" [icon]="page.icon" 
+			[title]="page.title" [root]="page.root"></super-tab>
 	</super-tabs>
 </ion-content>

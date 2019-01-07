@@ -10,59 +10,40 @@
 </ion-header>
 
 <ion-content padding>
-		<ion-grid>
-			<div class="segment">
-				<ion-row>
-					<h2 class="header" ion-text>Target Cook Temperature</h2>
-				</ion-row>
-				<ion-row>
-					<ion-col>
-						<ion-item>
-								Target Temperature: {{cookProvider.cook.targetTemperature}}
-						</ion-item>
-					</ion-col>
-					<ion-col>
-						<ion-item>
-								Target Temperature Thermocouple: {{cookProvider.cook.targetTemperatureThermocouple}}
-						</ion-item>
-					</ion-col>
-				</ion-row>
-			</div>
-			<div class="segment" *ngIf="cookProvider.cook.endCondition == EndCondition.TIME">
-				<ion-row>
-					<h2 class="header" ion-text>Time</h2>
-				</ion-row>
-				<ion-row>
-					<ion-col>
-						<ion-item>
-								End Time: {{cookProvider.cook.endTime}}
-						</ion-item>
-					</ion-col>
-				</ion-row>
-			</div>
-			<div class="segment" *ngIf="cookProvider.cook.endCondition == EndCondition.TEMPERATURE">
-					<ion-row>
-						<h2 class="header" ion-text>Target Cook Temperature</h2>
-					</ion-row>
-					<ion-row>
-						<ion-col>
-							<ion-item>
-									Target Temperature: {{cookProvider.cook.targetTemperature}}
-							</ion-item>
-						</ion-col>
-						<ion-col>
-							<ion-item>
-									Target Temperature Thermocouple: {{cookProvider.cook.targetTemperatureThermocouple}}
-							</ion-item>
-						</ion-col>
-					</ion-row>
-				</div>
-				<ion-row>
-					<ion-col col-12 text-center>
-						<button ion-button (click)="closeModal(showToast)">
-							Start Cook
-						</button>
-					</ion-col>
-				</ion-row>
-		</ion-grid>
+	<div class="segment">
+		<h2 class="header" ion-text>Cook Info</h2>
+		<ion-item>
+				Name: {{cookProvider.cook.name.value}}
+		</ion-item>
+	</div>
+	<div class="segment">
+		<h2 class="header" ion-text>Target Cook Temperature</h2>
+		<ion-item>
+				Target Temperature: {{cookProvider.cook.targetTemperature.value}}{{temperatureSymbols[settings.units]}}
+		</ion-item>
+		<ion-item>
+				Thermocouple: {{cookProvider.cook.targetTemperatureThermocouple.value.name}}
+		</ion-item>
+	</div>
+	<div class="segment" *ngIf="cookProvider.cook.endCondition.value == EndCondition.TIME">
+		<h2 class="header" ion-text>Cook will end in SomeBS HERE</h2>
+		<ion-item>
+				End Time: {{cookProvider.cook.endTime.value}}
+		</ion-item>
+	</div>
+	<div class="segment" *ngIf="cookProvider.cook.endCondition.value == EndCondition.TEMPERATURE">
+		<h2 class="header" ion-text>Cook will end when target temperature is reached</h2>
+		<ion-item>
+				Target Temperature: {{cookProvider.cook.endConditionTargetTemperature.value}}{{temperatureSymbols[settings.units]}}
+		</ion-item>
+		<ion-item>
+				Thermocouple: {{cookProvider.cook.endConditionThermocouple.value.name}}
+		</ion-item>
+	</div>
+	<div class="submit">
+		<button icon-end ion-button (click)="closeModal(showToast)">
+			Confirm and Start Cook
+			<ion-icon name="bonfire"></ion-icon>
+		</button>
+	</div>
 </ion-content>

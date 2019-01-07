@@ -3,18 +3,18 @@ import { Component } from '@angular/core'
 import {
 	IonicPage,
 	ModalController,
-	ViewController,
 	ToastController,
 	Toast,
 	Events
 } from 'ionic-angular' 
 
 import { SettingsProvider } from '../../providers/settings/settings'
-import { CookProvider, EndConditions, EndCondition } from '../../providers/cook/cook'
+import { CookProvider, EndConditions, EndCondition, CookStatus } from '../../providers/cook/cook'
 import { HomePage } from '../home/home'
 import { CookSummaryPage } from '../cook-summary/cook-summary'
 
 import { temperatureSymbols } from '../../helpers/temperature'
+
 
 @IonicPage()
 @Component({
@@ -22,11 +22,13 @@ import { temperatureSymbols } from '../../helpers/temperature'
   templateUrl: 'cook.html'
 })
 export class CookPage {
+
 	toast: Toast
 	validated = true
 
 	EndCondition = EndCondition
 	EndConditions = EndConditions
+	CookStatus = CookStatus
 	temperatureSymbols = temperatureSymbols
 
  	 constructor(
@@ -37,6 +39,10 @@ export class CookPage {
 		public events: Events) {
 	}
 
+	moveFocus(nextElement) {
+		nextElement.setFocus()
+	}
+
 	startCook() {
 		const cookSummaryModal = this.modalCtrl.create(CookSummaryPage)
 		cookSummaryModal.onDidDismiss(showToast => {
@@ -45,8 +51,12 @@ export class CookPage {
 				this.events.publish('nav:swipeTo', HomePage);
 				this.showToast()
 			}
-	   });
+		})
 		cookSummaryModal.present()
+	}
+
+	updateCook(){
+		console.log("UPDATE COOK")
 	}
 
 	showToast() {
@@ -57,7 +67,19 @@ export class CookPage {
 			message: 'Cook has been started',
 			showCloseButton: true,
 			closeButtonText: 'Ok'
-		});
+		})
 		this.toast.present()
 	}
+
+	// onSelectChange(selected){
+	// 	const temp = this.settings.thermocouples.slice()
+	// 	temp.map(thermocouple => {
+	// 		thermocouple.selected = (
+	// 			thermocouple.designation == this.cookProvider.cook.targetTemperatureThermocouple
+	// 			|| thermocouple.designation == this.cookProvider.cook.endConditionThermocouple
+	// 		)
+	// 	})
+	// 	this.settings.thermocouples = temp
+	// }
+
 }

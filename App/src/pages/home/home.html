@@ -2,17 +2,23 @@
 	<ion-grid>
 		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.STOPPED">
 			<ion-col col-12 text-center>
-				Start your day with a smoke
+				<h3 ion-text>Start your day with a smoke</h3>
 			</ion-col>
 			<ion-col col-12 text-center>
-				<button ion-button (click)="navigateToCook()">
+				<button icon-end ion-button (click)="navigateToCook()">
 					Start Cooking 
+					<ion-icon name="bonfire"></ion-icon>
 				</button>
 			</ion-col>
 		</ion-row>
-		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.PAUSED">
+		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.FINISHED">
 			<ion-col col-12 text-center>
-				Autoresuming Cook in: {{cookProvider.formattedAutoResumeTimeLeft}}
+				Finished cook! Insert dancing guy here
+			</ion-col>
+		</ion-row>
+		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.PAUSED">
+			<ion-col col-12 text-center *ngIf="cookProvider.autoResumeTimeLeft">
+				<h3 ion-text>Auto Resuming Cook in: {{cookProvider.autoResumeTimeLeft | hhmmss}}</h3>
 			</ion-col>		
 			<ion-col col-6 text-center>
 				<button ion-button icon-end (click)="cookProvider.resumeCook()">
@@ -28,9 +34,9 @@
 			</ion-col>
 		</ion-row>
 		<ion-row *ngIf="cookProvider.cookStatus == CookStatus.RUNNING">
-			<ion-col col-12 text-center>
-				Cook Running!
-			</ion-col>
+			<ion-col col-12 text-center *ngIf="cookProvider.estimatedTimeLeft">
+				<h3 ion-text>Time to tasty food!: {{cookProvider.estimatedTimeLeft}}</h3>
+			</ion-col>		
 			<ion-col col-12 text-center>
 				<button ion-button icon-end (click)="cookProvider.pauseCook()">
 					Pause Cook 
@@ -38,14 +44,14 @@
 				</button>
 			</ion-col>
 		</ion-row>
-		<ion-row *ngFor="let temperature of temperatureProvider.currentTemperatures">
+		<ion-row *ngFor="let thermocouple of ( settings.thermocouples | availableThermocouples )">
 			<ion-col col-12 text-center>
 				<ngx-gauge
 					[type]="gaugeType" 
-					[value]="convertTemp(settings.units, temperature.value)"
+					[value]="convertTemp(settings.units, thermocouple.value)"
 					[foregroundColor]="color"
 					[backgroundColor]="gaugeBackgroundColor"
-					[label]="temperature.name"  
+					[label]="thermocouple.name"  
 					[append]="temperatureSymbols[settings.units]"
 					[max]="convertTemp(settings.units, 200)"
 					[thick]=15

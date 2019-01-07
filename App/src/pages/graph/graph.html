@@ -1,26 +1,24 @@
 <ion-content> 
-	<ion-card *ngFor="let graph of graphs">
+	<ion-card *ngFor="let datum of (dataProvider.data | graphData)">
 		<ion-card-header>
-			<h1>{{graph.data.date}} - {{graph.data.name}}</h1>
+			<h1>{{datum.date}} - {{datum.name}}</h1>
 			<span></span>
-			<button class="expand" (click)="collapseCard(graph)" icon-start *ngIf='graph.expanded'>
-				<ion-icon name="arrow-up"></ion-icon>
-			</button>
-			<button class="expand" (click)="expandCard(graph)" icon-start *ngIf='!graph.expanded'>
-				<ion-icon name="arrow-down"></ion-icon>
-			</button>
+				<ion-icon class="collapse" (click)="collapseCard(datum)" name="arrow-up" *ngIf='datum.expanded'></ion-icon>
+				<ion-icon class="collapse" (click)="expandCard(datum)" name="arrow-down" *ngIf='!datum.expanded'></ion-icon>
 		</ion-card-header>
 		<ion-card-content>
 			<canvas #graphCanvas></canvas>
-			<div *ngIf='graph.expanded'>
-				<h2 ion-text>Notes:</h2> 
-				<p ion-text>
-					{{graph.data.notes}}
-				</p>
-				<button ion-button icon-start>
-					<ion-icon name="create"></ion-icon>
-					Edit
-				</button>
+			<div *ngIf='datum.expanded'>
+				<h1 ion-text>Notes:</h1>
+				<ion-item-divider></ion-item-divider>
+				<ion-textarea class="notes" disabled autosize [(ngModel)]="datum.notes"
+				></ion-textarea>
+				<div class="footer">
+					<button class="editButton" ion-button icon-start (click)="editNotes(datum)">
+						<ion-icon name="create"></ion-icon>
+						Edit
+					</button>
+				</div>
 			</div>
 		</ion-card-content>
 	</ion-card>

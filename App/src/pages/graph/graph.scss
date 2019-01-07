@@ -1,4 +1,19 @@
 page-graph {
+	.footer{
+		display: flex;
+		justify-content: flex-end;
+	}
+	.notes{
+		.text-input[disabled]{
+			opacity: 1;
+		}
+	}
+
+	.editButton{
+		display: flex;
+		justify-content: flex-end;
+	}
+
 	ion-card-header {
 		display: flex;
 		flex-direction: row;
@@ -23,6 +38,26 @@ page-graph {
 		button.edit {
 			justify-content: flex-end;
 		}
+	}
+
+	.collapse {
+		background-color: #4CAF50;
+		border: none;
+		border-radius: 50%;
+
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;	
+		align-items: center;
+		margin: 0px;
+
+		padding-top: 8px;
+		padding-bottom: 8px;
+		padding-right: 12px;
+		padding-left: 12px;
+		
+		font-size: 28px;
+		cursor: pointer;
 	}
 }
 

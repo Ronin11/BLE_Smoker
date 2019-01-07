@@ -8,7 +8,6 @@ import {
 
 import { CookPage } from '../cook/cook'
 import { SettingsProvider } from '../../providers/settings/settings'
-import { TemperatureProvider } from '../../providers/temperature/temperature'
 import { CookProvider, CookStatus } from '../../providers/cook/cook'
 
 import { 
@@ -36,7 +35,6 @@ export class HomePage {
 
 	constructor(
 		private cookProvider: CookProvider,
-		private temperatureProvider: TemperatureProvider,
 		private settings: SettingsProvider,
 		public loadingCtrl: LoadingController,
 		public navCtrl: NavController,

@@ -1,86 +1,94 @@
 <ion-content padding>
-	<ion-grid>
-		<!-- <div class="segment">
-			<ion-row>
-				<h2 class="header" ion-text>Cook Start</h2>
-			</ion-row>
-			<ion-row>
-				<ion-col>
-					<ion-item>
-						<ion-label>Start Time</ion-label>
-						<ion-datetime displayFormat="h:mm" [(ngModel)]="cookProvider.cook.startTime" ></ion-datetime>
-					</ion-item>
-				</ion-col>
-			</ion-row>
-		</div> -->
+	<form (ngSubmit)="startCook()">
 		<div class="segment">
-			<ion-row>
-				<h2 class="header" ion-text>Target Cook Temperature</h2>
-			</ion-row>
-			<ion-row>
-				<ion-col>
-					<ion-item>
-						<ion-label>Temperature</ion-label>
-						<ion-input type="number" class="target" 
-						[(ngModel)]="cookProvider.cook.targetTemperature"></ion-input>
-					</ion-item>
-				</ion-col>
-				<ion-col>
-					<ion-item>
-						<ion-label>Thermocouple</ion-label>
-						<ion-select [(ngModel)]="cookProvider.cook.targetTemperatureThermocouple" interface="action-sheet">
-							<ion-option value="1">1</ion-option>
-							<ion-option value="2">2</ion-option>
-						</ion-select>
-					</ion-item>
-				</ion-col>
-			</ion-row>
+			<h2 class="header" ion-text>Cook Info</h2>
+			<ion-item>
+				<ion-label>Name:</ion-label>
+				<ion-input [(ngModel)]="cookProvider.cook.name.value"
+					(ngModelChange)="cookProvider.validateCook()"
+					name="name" myTabIndex></ion-input>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.name.validated == false">
+				<p class="error">{{cookProvider.cook.name.validationError}}</p>
+			</ion-item>
+			<h2 class="header" ion-text>Target Cook Temperature</h2>
+			<ion-item>
+				<ion-label>Temperature:</ion-label>
+				<ion-input type="number" class="target"
+					[(ngModel)]="cookProvider.cook.targetTemperature.displayValue"
+					(ngModelChange)="cookProvider.validateCook()"
+					name="targetTemperature" myTabIndex></ion-input>
+				<ion-icon class="tempSymbol" item-right>{{temperatureSymbols[settings.units]}}</ion-icon>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.targetTemperature.validated == false">
+				<p class="error">{{cookProvider.cook.targetTemperature.validationError}}</p>
+			</ion-item>
+			<ion-item>
+				<ion-label>Sensor:</ion-label>
+				<ion-select [(ngModel)]="cookProvider.cook.targetTemperatureThermocouple.value" 
+					(ngModelChange)="cookProvider.validateCook()"
+					name="targetTemperatureThermocouple" myTabIndex interface="action-sheet">
+					<ion-option *ngFor="let thermocouple of ( settings.thermocouples | availableThermocouples )"
+						[value]="thermocouple">{{thermocouple.name}}</ion-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.targetTemperatureThermocouple.validated == false">
+				<p class="error">{{cookProvider.cook.targetTemperatureThermocouple.validationError}}</p>
+			</ion-item>
 		</div>
 		<div class="segment">
-			<ion-row>
-				<h2 class="header" ion-text>Cook End</h2>
-			</ion-row>
-			<ion-row>
-				<ion-item>
-					<ion-label>End Cook Condition</ion-label>
-					<ion-select [(ngModel)]="cookProvider.cook.endCondition" interface="action-sheet">
-						<ion-option *ngFor="let condition of EndConditions" [value]="condition.value">{{condition.name}}</ion-option>
-					</ion-select>
-				</ion-item>
-			</ion-row>
-			<ion-row *ngIf="cookProvider.cook.endCondition == EndCondition.TEMPERATURE">
-				<ion-col>
-					<ion-item>
-						<ion-label>Temperature</ion-label>
-						<ion-input type="number" class="target" 
-						[(ngModel)]="cookProvider.cook.endConditionTargetTemperature"></ion-input>
-					</ion-item>
-				</ion-col>
-				<ion-col>
-					<ion-item>
-						<ion-label>Thermocouple</ion-label>
-						<ion-select [(ngModel)]="cookProvider.cook.endConditionThermocouple" interface="action-sheet">
-							<ion-option value="1">1</ion-option>
-							<ion-option value="2">2</ion-option>
-						</ion-select>
-					</ion-item>
-				</ion-col>
-			</ion-row>
-			<ion-row *ngIf="cookProvider.cook.endCondition == EndCondition.TIME">
-				<ion-col>
-					<ion-item>
-						<ion-label>End Time</ion-label>
-						<ion-datetime displayFormat="h:mm" [(ngModel)]="cookProvider.cook.endTime"></ion-datetime>
-					</ion-item>
-				</ion-col>
-			</ion-row>
+			<h2 class="header" ion-text>Cook End</h2>
+			<ion-item>
+				<ion-label>End Cook Condition:</ion-label>
+				<ion-select [(ngModel)]="cookProvider.cook.endCondition.value" 
+					(ngModelChange)="cookProvider.validateCook()"
+					name="endCondition" myTabIndex interface="action-sheet">
+					<ion-option *ngFor="let condition of EndConditions" [value]="condition.value">{{condition.name}}</ion-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.endCondition.value == EndCondition.TEMPERATURE">
+				<ion-label>Temperature:</ion-label>
+				<ion-input type="number" class="target" [(ngModel)]="cookProvider.cook.endConditionTargetTemperature.displayValue" 
+					(ngModelChange)="cookProvider.validateCook()"
+					name="endConditionTargetTemperature" myTabIndex></ion-input>
+				<ion-icon class="tempSymbol" item-right>{{temperatureSymbols[settings.units]}}</ion-icon>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.endConditionTargetTemperature.validated == false">
+				<p class="error">{{cookProvider.cook.endConditionTargetTemperature.validationError}}</p>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.endCondition.value == EndCondition.TEMPERATURE">
+				<ion-label>Sensor:</ion-label>
+				<ion-select [(ngModel)]="cookProvider.cook.endConditionThermocouple.value" 
+					(ngModelChange)="cookProvider.validateCook()"
+					name="endConditionThermocouple" myTabIndex interface="action-sheet">
+					<ion-option *ngFor="let thermocouple of settings.thermocouples | availableThermocouples"
+						[value]="thermocouple">{{thermocouple.name}}</ion-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.endConditionThermocouple.validated == false">
+				<p class="error">{{cookProvider.cook.endConditionThermocouple.validationError}}</p>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.endCondition.value == EndCondition.TIME">
+				<ion-label>End Time:</ion-label>
+				<ion-datetime myTabIndex displayFormat="h:mm" 
+					[(ngModel)]="cookProvider.cook.endTime.value" 
+					name="endTime" (ngModelChange)="cookProvider.validateCook()"></ion-datetime>
+			</ion-item>
+			<ion-item *ngIf="cookProvider.cook.endTime.validated == false">
+				<p class="error">{{cookProvider.cook.endTime.validationError}}</p>
+			</ion-item>
 		</div>
-		<ion-row>
-			<ion-col col-12 text-center>
-				<button ion-button [disabled]="!validated" (click)="startCook()">
-					Start Cooking
-				</button>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+		<div class="submit">
+			<button icon-end ion-button *ngIf="cookProvider.cookStatus == CookStatus.STOPPED || cookProvider.cookStatus == CookStatus.FINISHED"
+				[disabled]="!cookProvider.cook.validated" (click)="startCook()" type="submit">
+				Start Cooking
+				<ion-icon name="bonfire"></ion-icon>
+			</button>
+			<button icon-end ion-button *ngIf="cookProvider.cookStatus == CookStatus.RUNNING || cookProvider.cookStatus == CookStatus.PAUSED"
+				[disabled]="!cookProvider.cook.updateValidated" (click)="updateCook()" type="submit">
+				Update Cook
+				<ion-icon name="bonfire"></ion-icon>
+			</button>
+		</div>
+	</form>
 </ion-content>

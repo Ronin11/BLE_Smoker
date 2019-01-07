@@ -55,11 +55,12 @@ export class MyApp {
 		public modalCtrl: ModalController,
 		public events: Events) {
 		platform.ready().then(() => {
+			commsProvider.connect()
 			// Okay, so the platform is ready and our plugins are available.
 			// Here you can do any higher level native things you might need.
 			statusBar.styleDefault() 
 			splashScreen.hide()
-			if(!this.commsProvider.isConnected()){
+			if(!this.commsProvider.connected){
 				const connectModal = this.modalCtrl.create(ConnectPage)
 				connectModal.present()
 			}

@@ -1,9 +1,10 @@
 import { Component, ViewChildren } from '@angular/core'
-import { IonicPage } from 'ionic-angular'
+import { IonicPage, ModalController } from 'ionic-angular'
 
 import { Chart } from 'chart.js'
 
-import { TemperatureProvider } from '../../providers/temperature/temperature'
+import { NoteEditPage } from '../note-edit/note-edit'
+import { DataProvider } from '../../providers/data/data'
 
 @IonicPage()
 @Component({
@@ -14,44 +15,49 @@ export class GraphPage {
 
 	@ViewChildren('graphCanvas') graphElements
 
-	graphs
+	graphs = []
 
-	constructor(private temperature: TemperatureProvider) {
-		this.graphs = this.temperature.getCookData().map(data => 
-			{
-				return {
-					data,
-					expanded: false
-				}
-			}
-		)
+	constructor(
+		public modalCtrl: ModalController,
+		private dataProvider: DataProvider
+		) {
 	}
 
-	ionViewDidLoad() {
-		const canvases = this.graphElements.toArray()
-		for(let i = 0; i < this.graphs.length; i++){
-			this.graphs[i].canvas = canvases[i]
-		}
-
+	ionViewDidEnter() {
+		let count = this.graphElements._results.length
+		this.graphElements.changes.subscribe(elements => {
+			if(count != elements._results.length){
+				count = elements._results.length
+				this.drawAllGraphs()
+			}
+		})
 		this.drawAllGraphs()
 	}
 
 	expandCard(graph){
 		graph.expanded = true
-		graph.chart.legend.options.display = true
-		graph.chart.update()
+		this.graphs[graph.id].chart.legend.options.display = true
+		this.graphs[graph.id].chart.update()
 	}
 
 	collapseCard(graph){
 		graph.expanded = false
-		graph.chart.legend.options.display = false
-		graph.chart.update()
+		this.graphs[graph.id].chart.legend.options.display = false
+		this.graphs[graph.id].chart.update()
+	}
+
+	editNotes(graph) {
+		const editNotesModal = this.modalCtrl.create(NoteEditPage, graph)
+		editNotesModal.present()
 	}
 
 	drawAllGraphs(){
-		this.graphs.forEach(element => {
-			element.chart = this.drawGraph(element.data, element.canvas)
-		})
+		for(let i = 0; i < this.graphElements._results.length; i++){
+			this.graphs[i] = {
+				canvas: this.graphElements._results[i],
+				chart: this.drawGraph(this.dataProvider.data[i], this.graphElements._results[i])
+			}
+		}
 	}
 
 	drawGraph(cook, canvas){
@@ -64,7 +70,7 @@ export class GraphPage {
 				}
 			},
 			data: {
-				labels: ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00"],
+				labels: cook.labels,
 				datasets: cook.data.map(element => {
 					return {
 						label: element.name,

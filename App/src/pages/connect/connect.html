@@ -1,10 +1,19 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Connect to Device</ion-title>
-  </ion-navbar>
+	<ion-navbar>
+		<ion-title>Connect to Device</ion-title>
+	</ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
-
+	<div class="spinner">
+		<ion-spinner></ion-spinner>
+		<h3>Scanning...</h3> 
+	</div>
+	<ion-item *ngFor="let device of comms.discoveredDevices">
+		<h1 ion-text>{{device.id}}</h1>
+		<button ion-button (click)="connect(device)">
+			Connect
+		</button>
+	</ion-item>
 </ion-content>
