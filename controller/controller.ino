@@ -35,7 +35,7 @@ BLECharacteristic writeFanSpeedCharacteristic = BLECharacteristic(0x0020);
 int BLUE_LED = 3;
 int RED_LED = 4;
 int FAN = 29;
-uint16_t targetTemp = 0;
+float targetTemp = 0;
 uint32_t startTime = 0;
 uint32_t endTime = 0;
 uint8_t fanSpeed = 0;
@@ -175,7 +175,7 @@ void targetTempWriteEvent(BLECharacteristic& chr, uint8_t* data, uint16_t len, u
     return;
   }
   arrayToUint16 converter = {data[0],data[1]}; //Create a converter
-  targetTemp = converter.integer; //Read the 16bit integer value.
+  targetTemp = converter.integer/10; //Read the 16bit integer value.
   readTargetTempCharacteristic.write16(targetTemp);
 }
 
@@ -211,6 +211,8 @@ void increaseTemp(){
   }else if(fanSpeed < FAN_MIN_SPEED){
     fanSpeed = FAN_MIN_SPEED;
   }
+    Serial.println("INCREASE");
+    Serial.println(fanSpeed);
 }
 
 void decreaseTemp(){
@@ -218,7 +220,10 @@ void decreaseTemp(){
     fanSpeed -= 5;
     if(fanSpeed < FAN_MIN_SPEED){
        fanSpeed = 0;
+       digitalWrite(FAN, LOW);
     }
+    Serial.println("DECREASE");
+    Serial.println(fanSpeed);
   }
 }
 
@@ -234,9 +239,9 @@ void checkTargetTemp(uint16_t temp){
       Serial.println("COOK DONE");
       return;
     }
-    if(temp > targetTemp + 3){
+    if(temp > targetTemp + 2){
       decreaseTemp();
-    }else if(temp < targetTemp - 3){
+    }else if(temp < targetTemp - 2){
       increaseTemp();
     }
 }
