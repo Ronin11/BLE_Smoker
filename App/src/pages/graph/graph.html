@@ -7,10 +7,12 @@
 				<ion-icon class="collapse" (click)="expandCard(datum)" name="arrow-down" *ngIf='!datum.expanded'></ion-icon>
 		</ion-card-header>
 		<ion-card-content>
-			<canvas #graphCanvas></canvas>
-			<div *ngIf='datum.expanded'>
-				<h1 ion-text>Notes:</h1>
-				<ion-item-divider></ion-item-divider>
+			<div class="graphContainer">
+				<canvas #graphCanvas height="250"></canvas>
+			</div>
+			<div [className]='datum.expanded ? "expanded" : "collapsed"'>
+				<h1 class="oof" ion-text>Notes:</h1>
+				<ion-item-divider class="divider"></ion-item-divider>
 				<ion-textarea class="notes" disabled autosize [(ngModel)]="datum.notes"
 				></ion-textarea>
 				<div class="footer">

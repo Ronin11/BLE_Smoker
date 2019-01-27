@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 
 // import { CommsProvider } from '../comms/comms'
 import { SettingsProvider } from '../settings/settings'
+import { NotificationProvider } from '../notification/notification'
 
 import { currentTimeInSeconds } from '../../helpers/time'
 import { convertToCelsius } from '../../helpers/temperature'
@@ -49,11 +50,13 @@ function isEquivalent(a, b) {
 	return false
 }
 
+const today = new Date()
+
 @Injectable()
 export class CookProvider {
 	cook = {
 		name: {
-			value: null,
+			value: `${today.getMonth()+1}/${today.getDate()}/${today.getFullYear()}`,
 			validated: null,
 			validationError: null
 		},
@@ -107,9 +110,12 @@ export class CookProvider {
 
 	constructor(
 		private settings: SettingsProvider,
+		private notificationProvider: NotificationProvider
 		// private comms: CommsProvider
 		) {
 		this.cookStatus = CookStatus.STOPPED
+		notificationProvider.sendNotification('TITEL', 'PENIS')
+		
 	}
 
 	getCookStatusFromDevice(){

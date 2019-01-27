@@ -21,6 +21,7 @@ export class GraphPage {
 		public modalCtrl: ModalController,
 		private dataProvider: DataProvider
 		) {
+
 	}
 
 	ionViewDidEnter() {
@@ -67,7 +68,9 @@ export class GraphPage {
 				legend: {
 					display: false,
 					position: "bottom",
-				}
+					fullWidth: true,
+				},
+				maintainAspectRatio: false
 			},
 			data: {
 				labels: cook.labels,

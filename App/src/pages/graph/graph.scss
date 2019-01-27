@@ -1,4 +1,84 @@
+@mixin keyframes($animation-name) {
+	@-webkit-keyframes #{$animation-name} {
+	  @content;
+	}
+	@-moz-keyframes #{$animation-name} {
+	  @content;
+	}  
+	@-ms-keyframes #{$animation-name} {
+	  @content;
+	}
+	@-o-keyframes #{$animation-name} {
+	  @content;
+	}  
+	@keyframes #{$animation-name} {
+	  @content;
+	}
+  }
+  
+  @mixin animation($str) {
+	-webkit-animation: #{$str};
+	-moz-animation: #{$str};
+	-ms-animation: #{$str};
+	-o-animation: #{$str};
+	animation: #{$str};      
+  }
+
+
 page-graph {
+	@include keyframes(flipdown){
+		0% {
+			opacity: 0;
+			transform-origin: top center;
+			transform: rotateX(-90deg);
+		}
+		5% {
+			opacity: 1;
+		}
+		80% {
+			transform: rotateX(8deg);
+		}
+		83% {
+			transform: rotateX(6deg);
+		}
+		92% {
+			transform: rotateX(-3deg);
+		}
+		100% {
+			transform-origin: top center;
+			transform: rotateX(0deg);
+			.transition {
+				transition: all 0.25s ease-in-out;
+			}
+		}
+	}
+	.transition {
+		transition: all 0.25s ease-in-out
+	}
+	.flipIn {
+		animation: flipdown 0.5s ease both
+	}
+
+	.oof{
+		margin-top: 20px;
+	}
+
+	.expanded {
+		@extend .flipIn;
+		@extend .transition;
+		max-height: 1200px;
+	}
+	.collapsed {
+		@extend .transition;
+		max-height: 0px;
+	}
+
+	.graphContainer{
+		// width: 100% !important;
+        // max-width: 200px;
+        // height: auto !important;
+	}
+	
 	.footer{
 		display: flex;
 		justify-content: flex-end;
@@ -12,6 +92,11 @@ page-graph {
 	.editButton{
 		display: flex;
 		justify-content: flex-end;
+	}
+
+	.divider{
+		height: 2px;
+		min-height: 2px;
 	}
 
 	ion-card-header {
@@ -41,7 +126,8 @@ page-graph {
 	}
 
 	.collapse {
-		background-color: #4CAF50;
+		color: color($colors, light, base);
+		background-color: color($colors, primary, base);
 		border: none;
 		border-radius: 50%;
 
@@ -59,6 +145,7 @@ page-graph {
 		font-size: 28px;
 		cursor: pointer;
 	}
+
 }
 
 .ios, .md {

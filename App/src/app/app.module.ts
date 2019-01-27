@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen'
 import { SpinnerDialog } from '@ionic-native/spinner-dialog'
 import { StatusBar } from '@ionic-native/status-bar' 
 import { IonicStorageModule } from '@ionic/storage' 
+import { Diagnostic } from '@ionic-native/diagnostic'
 import { BLE } from '@ionic-native/ble' 
 import { HTTP } from '@ionic-native/http'
 
@@ -28,6 +29,7 @@ import { BLECommsProvider } from '../providers/comms/ble'
 import { CommsProvider } from '../providers/comms/comms'
 import { DataProvider } from '../providers/data/data'
 import { CookProvider } from '../providers/cook/cook'
+import { NotificationProvider } from '../providers/notification/notification';
 
 import { Autosize } from '../directives/autosize/autosize'
 import { TabIndexDirective } from '../directives/tab-index/tab-index'
@@ -35,6 +37,7 @@ import { TabIndexDirective } from '../directives/tab-index/tab-index'
 import { HhmmssPipe } from '../pipes/hhmmss/hhmmss'
 import { AvailableThermocouplesPipe } from '../pipes/available-thermocouples/available-thermocouples'
 import { GraphDataPipe } from '../pipes/graph-data/graph-data'
+
 
 @NgModule({
 	declarations: [
@@ -73,6 +76,7 @@ import { GraphDataPipe } from '../pipes/graph-data/graph-data'
 	providers: [
 		BLE,
 		HTTP,
+		Diagnostic,
 		StatusBar,
 		SplashScreen,
 		SpinnerDialog,
@@ -82,7 +86,8 @@ import { GraphDataPipe } from '../pipes/graph-data/graph-data'
 		CommsProvider,
 		DataProvider,
 		CookProvider,
-		DataProvider
+		DataProvider,
+    	NotificationProvider
 	]
 })
 export class AppModule {}

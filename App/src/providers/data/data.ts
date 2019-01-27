@@ -35,7 +35,7 @@ export class DataProvider {
 
 	createCook(cook){
 		let notes = ""
-		notes += `\nTarget Temperature: ${cook.targetTemperature} ${temperatureSymbols[this.settings.units]}`
+		notes += `Target Temperature: ${cook.targetTemperature} ${temperatureSymbols[this.settings.units]}`
 		notes += `\nTemperature Sensor: ${cook.targetTemperatureThermocouple.name}`
 		if(cook.endCondition == EndCondition.TIME){
 			notes += `\n~~~~ Time Based End Condition ~~~~`
@@ -45,11 +45,11 @@ export class DataProvider {
 			notes += `\nTarget Temperature: ${cook.endConditionTargetTemperature} ${temperatureSymbols[this.settings.units]}`
 			notes += `\nTemperature Sensor: ${cook.endConditionThermocouple.name}`
 		}
-		const today = new Date()
+		
 		const newCook = {
 			id: this.data.length,
+			startTime: new Date().getMilliseconds(),
 			name: cook.name,
-			date: `${today.getMonth()+1}/${today.getDate()}/${today.getFullYear()}`,
 			labels: ["8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00"],
 			notes: notes,
 			data: [

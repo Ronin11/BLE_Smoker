@@ -6,14 +6,26 @@
 
 
 <ion-content padding>
-	<div class="spinner">
-		<ion-spinner></ion-spinner>
-		<h3>Scanning...</h3> 
-	</div>
-	<ion-item *ngFor="let device of comms.discoveredDevices">
-		<h1 ion-text>{{device.id}}</h1>
-		<button ion-button (click)="connect(device)">
-			Connect
+	<div *ngIf="!bleState" class="spinner">
+		<h3 ion-text>Blueooth must be enabled to access device.</h3>
+		<button ion-button (click)="openSettings()">
+			Open Bluetooth Settings
 		</button>
-	</ion-item>
+	</div>
+	<div *ngIf="bleState">
+		<div class="spinner">
+			<h3>Scanning...</h3> 
+		</div>
+		<ion-item *ngFor="let device of comms.discoveredDevices">
+			<div class="items">
+				<h1 ion-text>{{device.id}}</h1>
+				<button class="connect" (click)="connect(device)">
+					Connect
+				</button>
+			</div>
+		</ion-item>
+		<div class="spinner">
+			<ion-spinner></ion-spinner>
+		</div>
+	</div>
 </ion-content>

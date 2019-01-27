@@ -1,7 +1,28 @@
 page-connect {
 	.spinner{
+		margin-top: 20px;
 		display: flex;
-		// justify-content: space-around;
+		flex-flow: column;
+		justify-content: center;
 		align-items: center;
+
+	}
+
+	.items{
+		display: flex;
+		flex-flow: row;
+		flex-wrap: nowrap;
+		justify-content: space-around;
+		align-items: center;
+		height: 40px;
+	}
+
+	.connect{
+		width: 100px;
+		height: 40px;
+		border-radius: 10px;
+		font-size: 18px;
+		background-color: color($colors, primary, base);
+		color: color($colors, light, base);
 	}
 }

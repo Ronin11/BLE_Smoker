@@ -6,7 +6,7 @@ import { BLE } from '@ionic-native/ble'
 import { ToastController } from 'ionic-angular'
 
 
-const smokerServiceUuid = "fa4bfdd9-7c98-4913-9981-c5bfeaa73c1b"
+const smokerServiceUuid = "fa4bfd01-7c98-4913-9981-c5bfeaa73c11"
 
 @Injectable()
 export class BLECommsProvider {
